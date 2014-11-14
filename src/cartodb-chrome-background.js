@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(function() {
   var context = "all";
-  var title = "Import in CartoDB";
+  var title = "Import table in CartoDB";
   var id = chrome.contextMenus.create({
       "title": title, 
       "contexts":[context],
