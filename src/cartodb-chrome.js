@@ -21,6 +21,9 @@ Array.prototype.sparseFirst = function() {
 }
 
 ////////////// Display button methods
+var MIN_ROWS = 4
+var MIN_COLS = 2
+
 function makeTablesImportables() {
 	var tables = importableTables();
 	for(var t = 0; t < tables.length; t++) {
@@ -49,7 +52,7 @@ function filterTablesWithInnerTables(sourceTables) {
 
 function filterSmallTables(tables) {
   return tables.filter(function(table) {
-    return (table.rows.length > 2) && (table.rows[table.rows.length - 1].cells.length > 1);
+    return (table.rows.length >= MIN_ROWS) && (table.rows[table.rows.length - 1].cells.length >= MIN_COLS);
   });
 }
 
