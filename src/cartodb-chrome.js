@@ -154,22 +154,20 @@ function collapseHeaderRows(rows, interestingRowLength) {
       interestingIndexes.push(index);
     }
   });
-  if(interestingIndexes[0] > 0) {
-    var distances = valueDistances(interestingIndexes);
-    var distancesHistogram = valueHistogram(distances);
-    if(distancesHistogram.sparseLength() === 1) {
-      var distance = distancesHistogram.sparseFirst();
-      var collapsedRows = [];
-      for(var ii = 0; ii < interestingIndexes.length; ii++) {
-        var collapsedRow = [];
-        var interestingIndex = interestingIndexes[ii];
-        for(var c = interestingIndex - distance + 1; c <= interestingIndex; c++) {
-          Array.prototype.push.apply(collapsedRow, rows[c]);
-        }
-        collapsedRows.push(collapsedRow);
+  var distances = valueDistances(interestingIndexes);
+  var distancesHistogram = valueHistogram(distances);
+  if(distancesHistogram.sparseLength() === 1) {
+    var distance = distancesHistogram.sparseFirst();
+    var collapsedRows = [];
+    for(var ii = 0; ii < interestingIndexes.length; ii++) {
+      var collapsedRow = [];
+      var interestingIndex = interestingIndexes[ii];
+      for(var c = interestingIndex - distance + 1; c <= interestingIndex; c++) {
+        Array.prototype.push.apply(collapsedRow, rows[c]);
       }
-      rows = collapsedRows;
+      collapsedRows.push(collapsedRow);
     }
+    rows = collapsedRows;
   }
   return rows;
 }
