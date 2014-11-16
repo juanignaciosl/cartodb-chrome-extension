@@ -27,10 +27,12 @@
   {
     "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
     "css": ["cartodb-chrome.css"],
-    "js": ["helpers.js", "cartodb-chrome.js", "cartodb-chrome-popup.js" ],
+    "js": ["helpers.js", "cartodb-chrome.js", "cartodb-chrome-popup.js", "sprintf.min.js" ],
     "all_frames": true
   } ],
   "web_accessible_resources": [
+    "sprintf.min.js",
+    "sprintf.min.map",
     "*.png"
   ]
 }

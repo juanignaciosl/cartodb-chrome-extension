@@ -1,9 +1,8 @@
-var BETA_PREFIX = 'Annoying Beta limitation: '
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
 var SERVER = 'http://development.localhost.lan:3000';
 //var SERVER = 'https://juanignaciosl.cartodb.com';
-var PATH = '/api/v1/imports/?filename=myimport.csv&api_key=';
+var PATH = '/api/v1/imports/';
 
 var MIN_ROWS = 4
 var MIN_COLS = 2
@@ -189,7 +188,7 @@ function sendCsv(csv) {
 
   chrome.storage.sync.get('apikey', function(value) {
     if(typeof value.apikey === 'undefined') {
-      alert(BETA_PREFIX + 'You must set your apikey in cartodb-chrome.js file');
+      alert('You must click the CartoDB icon at the top bar and set your Api key');
     } else {
       sendCsvWithApikey(csv, value.apikey);
     }
@@ -198,20 +197,27 @@ function sendCsv(csv) {
 }
 
 function sendCsvWithApikey(csv, apikey) {
-  var url = SERVER + PATH + apikey;
+  var url = SERVER + PATH + '?filename=' + filename() + '&apikey=' + apikey; 
+  console.log('url', url);
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url + apikey, true);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        alert(BETA_PREFIX + "Table sent! Please go to CartoDB to see your table");
+        alert("Table sent! Please go to CartoDB to see your table");
       } else {
         alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
       }
     }
   };
   xhr.send(csv);
+}
+
+function filename() {
+  var d = new Date();
+  //return 'import_' + d.getFullYear() + (d.getMonth()+1) + d.getDay() + d.getHours() + d.getMinutes() + d.getMilliseconds() + '.csv';
+  return sprintf("import_%4d%02d%02d%02d%02d%03d.csv", d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getMilliseconds());
 }
 
 // INFO: for context menu to retrieve clicked element
