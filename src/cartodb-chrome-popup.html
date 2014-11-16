@@ -4,7 +4,7 @@
     <title>CartoDB Chrome Extension</title>
     <style>
       body {
-        width: 200px;
+        width: 300px;
         overflow-x: hidden;
       }
 
@@ -17,9 +17,12 @@
       }
     </style>
 
-    <script src="cartodb-chrome-js.js"></script>
+    <script src="cartodb-chrome-popup.js"></script>
+    <script src="cartodb-chrome.js"></script>
   </head>
   <body>
+    <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
+    <button id="save-button">Save</button>
     <a href="https://www.cartodb.com">Go to CartoDB</a>
     <!-- TODO: login, import status... -->
   </body>

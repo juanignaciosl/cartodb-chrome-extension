@@ -15,7 +15,8 @@
   "permissions": [
     "https://www.cartodb.com/",
     "http://development.localhost.lan/",
-    "contextMenus"
+    "contextMenus",
+    "storage"
   ],
   "background": {
     "persistent": false,
@@ -25,7 +26,7 @@
   {
     "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
     "css": ["cartodb-chrome.css"],
-    "js": ["helpers.js", "cartodb-chrome.js"],
+    "js": ["helpers.js", "cartodb-chrome.js", "cartodb-chrome-popup.js" ],
     "all_frames": true
   } ],
   "web_accessible_resources": [

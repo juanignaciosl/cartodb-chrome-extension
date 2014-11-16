@@ -1,13 +1,17 @@
 var BETA_PREFIX = 'Annoying Beta limitation: '
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
+var SERVER = 'http://development.localhost.lan:3000';
+//var SERVER = 'https://juanignaciosl.cartodb.com';
+var PATH = '/api/v1/imports/?filename=myimport.csv&api_key=';
+
+var MIN_ROWS = 4
+var MIN_COLS = 2
+
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
 
 ////////////// Display button methods
-var MIN_ROWS = 4
-var MIN_COLS = 2
-
 function makeTablesImportables() {
 	var tables = importableTables();
   tables.map(function(table) {
@@ -183,31 +187,31 @@ function valueDistances(values) {
 function sendCsv(csv) {
   console.log(csv);
 
-  // TODO: set your apikey here
-  var apikey = 'xxxx';
-  var server = 'http://development.localhost.lan:3000';
-  //var server = 'https://juanignaciosl.cartodb.com';
-  var path = '/api/v1/imports/?filename=myimport.csv&api_key=';
+  chrome.storage.sync.get('apikey', function(value) {
+    if(typeof value.apikey === 'undefined') {
+      alert(BETA_PREFIX + 'You must set your apikey in cartodb-chrome.js file');
+    } else {
+      sendCsvWithApikey(csv, value.apikey);
+    }
+  });
 
-  if(apikey == null) {
-    alert(BETA_PREFIX + 'You must set your apikey in cartodb-chrome.js file');
-  } else {
-      var url = server + path + apikey;
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', url + apikey, true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function() { 
-        if (xhr.readyState == 4) {
-          if (xhr.status == 200) {
-            alert(BETA_PREFIX + "Table sent! Please go to CartoDB to see your table");
-          } else {
-            alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
-          }
-        }
-      };
-      xhr.send(csv);
-  }
+}
 
+function sendCsvWithApikey(csv, apikey) {
+  var url = SERVER + PATH + apikey;
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url + apikey, true);
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onreadystatechange = function() { 
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        alert(BETA_PREFIX + "Table sent! Please go to CartoDB to see your table");
+      } else {
+        alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
+      }
+    }
+  };
+  xhr.send(csv);
 }
 
 // INFO: for context menu to retrieve clicked element
