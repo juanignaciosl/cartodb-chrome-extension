@@ -25,7 +25,7 @@
   {
     "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
     "css": ["cartodb-chrome.css"],
-    "js": ["cartodb-chrome.js"],
+    "js": ["helpers.js", "cartodb-chrome.js"],
     "all_frames": true
   } ],
   "web_accessible_resources": [

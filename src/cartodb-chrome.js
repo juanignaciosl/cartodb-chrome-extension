@@ -1,24 +1,8 @@
-////////////// Helper methods to handle histogram sparse arrays
-Array.prototype.sparseLength = function() {
-  var c = 0;
-  for(a in this) {
-    if(!isNaN(a)) {
-      c++;
-    }
-  }
-  return c;
-}
+var BETA_PREFIX = 'Annoying Beta limitation: '
+var ICON_URL = chrome.extension.getURL("cartodb.png");
 
-Array.prototype.sparseFirst = function() {
-  var first = this;
-  for(a in this) {
-    if(!isNaN(a)) {
-      first = a;
-      break;
-    }
-  }
-  return first;
-}
+////////////// Strings
+var BUTTON_TITLE = 'Click to import to CartoDB';
 
 ////////////// Display button methods
 var MIN_ROWS = 4
@@ -26,13 +10,12 @@ var MIN_COLS = 2
 
 function makeTablesImportables() {
 	var tables = importableTables();
-	for(var t = 0; t < tables.length; t++) {
-    addImportButton(tables[t]);
-  }
+  tables.map(function(table) {
+    addImportButton(table);
+  });
 }
 
 function importableTables() {
-  // TODO: improve filtering, do something clever here ;)
   var tables =  [].slice.call(document.getElementsByTagName('table'));
   tables = filterTablesWithInnerTables(tables);
   tables = filterSmallTables(tables);
@@ -40,30 +23,25 @@ function importableTables() {
 }
 
 function filterTablesWithInnerTables(sourceTables) {
-  var tables = [];
-  for(var rt = 0; rt < sourceTables.length; rt++) {
-    var table = sourceTables[rt];
-    if(table.innerHTML.indexOf('<table') == -1) {
-      tables.push(table);
-    }
-  }
-  return tables;
+  return sourceTables.filter(function(table) {
+    return table.innerHTML.indexOf('<table') == -1;
+  });
 }
 
 function filterSmallTables(tables) {
   return tables.filter(function(table) {
-    return (table.rows.length >= MIN_ROWS) && (table.rows[table.rows.length - 1].cells.length >= MIN_COLS);
+    var rows = table.rows;
+    return (rows.length >= MIN_ROWS) 
+        && (rows[rows.length - 1].cells.length >= MIN_COLS);
   });
 }
 
 function addImportButton(table) {
-  var imgURL = chrome.extension.getURL("cartodb.png");
-
   var button = document.createElement('div');
   button.className = 'cartodb-import-button';
   button.onclick = importTableFromButton;
-  button.title = 'Click to import to CartoDB';
-  button.style.backgroundImage = "url('"+imgURL+"')";
+  button.title = BUTTON_TITLE;
+  button.style.backgroundImage = "url('"+ICON_URL+"')";
 
   table.parentNode.insertBefore(button, table);
 }
@@ -74,30 +52,29 @@ function importTableFromButton(event) {
 }
 
 function importTable(table) {
-  var csv = toCsv(table);
-  sendCsv(csv);
+  sendCsv(toCsv(table));
 }
 
 function toCsv(table) {
-  var rowArray = [];
+  var commaSeparatedCellRows = [];
   var rows = importableRows(table);
   for(var r = 0; r < rows.length; r++) {
-    var cells = rows[r];
+    var cellCollection = rows[r];
     var cellArray = [];
-    for(var c = 0; c < cells.length; c++) {
-      var cell = cells[c];
+    for(var c = 0; c < cellCollection.length; c++) {
+      var cell = cellCollection[c];
       cellArray.push(cleanText(cell.innerText));
     }
-    rowArray.push(cellArray.join(','));
+    commaSeparatedCellRows.push(cellArray.join(','));
   }
-  return rowArray.join('\n');
+  return commaSeparatedCellRows.join('\n');
 }
 
 function cleanText(innerText) {
   var tmp = document.createElement("DIV");
   tmp.innerHTML = innerText;
   var cleanedText = tmp.textContent || tmp.innerText || "";
-  // TODO: better way to remove commas? Maybe other separator?
+  // TODO: better way to remove decimal commas? Maybe quoting or other separator?
   return cleanedText.replace('\n', ' ').replace('<br>', ' ').replace('<br />', ' ').replace(',', '.').trim();
 }
 
@@ -117,8 +94,7 @@ function importableRows(table) {
     maxCols = indexOfMax(colsHistogram);
     rows = collapseHeaderRows(rows, maxCols);
   }
-  var importableRows = filterArrayPerElements(rows, maxCols);
-  return importableRows;
+  return filterArrayPerElements(rows, maxCols);
 }
 
 function filterRowsWithRowspanCells(rows) {
@@ -208,27 +184,32 @@ function valueDistances(values) {
 
 function sendCsv(csv) {
   console.log(csv);
-    /*
-    var postUrl = 'http://development.localhost.lan:3000';
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', postUrl, true);
+  // TODO: set your apikey here
+  var apikey = 'xxxx';
+  var server = 'http://development.localhost.lan:3000';
+  //var server = 'https://juanignaciosl.cartodb.com';
+  var path = '/api/v1/imports/?filename=myimport.csv&api_key=';
 
-    var params = 'csv=' + csv;
-
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-    xhr.onreadystatechange = function() { 
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-        } else {
+  if(apikey == null) {
+    alert(BETA_PREFIX + 'You must set your apikey in cartodb-chrome.js file');
+  } else {
+      var url = server + path + apikey;
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url + apikey, true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onreadystatechange = function() { 
+        if (xhr.readyState == 4) {
+          if (xhr.status == 200) {
+            alert(BETA_PREFIX + "Table sent! Please go to CartoDB to see your table");
+          } else {
+            alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
+          }
         }
-      }
-    };
+      };
+      xhr.send(csv);
+  }
 
-    // Send the request and set status
-    xhr.send(params);
-    */
 }
 
 // INFO: for context menu to retrieve clicked element
