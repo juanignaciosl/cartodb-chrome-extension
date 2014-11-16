@@ -16,7 +16,8 @@
     "https://www.cartodb.com/",
     "http://development.localhost.lan/",
     "contextMenus",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "background": {
     "persistent": false,

@@ -6,14 +6,30 @@
       body {
         width: 300px;
         overflow-x: hidden;
+        padding: 10px 30px;
+        text-align: center;
+        font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
       }
-
+      button {
+        padding: 10px 20px;
+        display: block;
+        margin: 10px auto 20px auto;
+      }
+      h1 {
+        font-family: "Proxima Nova Sb", "Helvetica Neue", "Helvetica", Arial, sans-serif;
+        color: #2483B4;
+      }
+      button {
+        background-color: #2483B4;
+        border: none;
+        color: white;
+      }
+      #logo-image {
+        width: 60px;
+      }
       img {
-        margin: 5px;
-        border: 2px solid black;
-        vertical-align: middle;
-        width: 75px;
-        height: 75px;
+        display: block;
+        margin: 0 auto;
       }
     </style>
 
@@ -21,10 +37,15 @@
     <script src="cartodb-chrome.js"></script>
   </head>
   <body>
-    <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
+    <h1>CartoDB configuration</h1>
+    <label>
+      Api key
+      <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
+    </label>
     <button id="save-button">Save</button>
-    <a href="https://www.cartodb.com">Go to CartoDB</a>
-    <!-- TODO: login, import status... -->
+    <p>You can get your Api key at <a href="https://www.cartodb.com">CartoDB</a>. Click your username at the top right menu in the page and press "Your Api keys" option.</p>
+    <a href="http://www.cartodb.com"><img src="" id="menu-image"/></a>
+    <a href="http://www.cartodb.com"><img src="" id="logo-image"/></a>
   </body>
 </html>
 
