@@ -1,8 +1,12 @@
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
-//var SERVER = 'http://development.localhost.lan:3000';
-//var SERVER = 'https://juanignaciosl.cartodb.com';
-var SERVER = 'https://kartones2.cartodb-staging.com';
+var PROTOCOL = 'http';
+//var PROTOCOL = 'https';
+
+var SERVER = 'localhost.lan:3000';
+//var SERVER = 'cartodb.com';
+//var SERVER = 'cartodb-staging.com';
+
 var PATH = '/api/v1/imports/';
 
 var MIN_ROWS = 4
@@ -186,18 +190,18 @@ function valueDistances(values) {
 function sendCsv(csv) {
   console.log(csv);
 
-  chrome.storage.sync.get('apikey', function(value) {
-    if(typeof value.apikey === 'undefined') {
+  chrome.storage.sync.get(['apikey', 'username'], function(value) {
+    if(typeof value.apikey === 'undefined' || typeof value.username === 'undefined') {
       alert('You must click the CartoDB icon at the top bar and set your Api key');
     } else {
-      sendCsvWithApikey(csv, value.apikey);
+      sendCsvWithApikey(csv, value.apikey, value.username);
     }
   });
 
 }
 
-function sendCsvWithApikey(csv, apikey) {
-  var url = SERVER + PATH + '?filename=' + filename() + '&apikey=' + apikey; 
+function sendCsvWithApikey(csv, apikey, username) {
+  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + filename() + '&apikey=' + apikey; 
   console.log('url', url);
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url + apikey, true);

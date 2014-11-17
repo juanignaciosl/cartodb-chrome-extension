@@ -31,6 +31,10 @@
         display: block;
         margin: 0 auto;
       }
+      label {
+        display: block;
+        margin: 10px 0;
+      }
     </style>
 
     <script src="cartodb-chrome-popup.js"></script>
@@ -38,6 +42,10 @@
   </head>
   <body>
     <h1>CartoDB configuration</h1>
+    <label>
+      Username
+      <input type="text" id="username" name="username" size="20" maxlength="40" />
+    </label>
     <label>
       Api key
       <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
