@@ -1,7 +1,8 @@
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
-var SERVER = 'http://development.localhost.lan:3000';
+//var SERVER = 'http://development.localhost.lan:3000';
 //var SERVER = 'https://juanignaciosl.cartodb.com';
+var SERVER = 'https://kartones2.cartodb-staging.com';
 var PATH = '/api/v1/imports/';
 
 var MIN_ROWS = 4
