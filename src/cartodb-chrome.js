@@ -162,14 +162,13 @@ function collapseHeaderRows(rows, interestingRowLength) {
   if(distancesHistogram.sparseLength() === 1) {
     var distance = distancesHistogram.sparseFirst();
     var collapsedRows = [];
-    for(var ii = 0; ii < interestingIndexes.length; ii++) {
+    interestingIndexes.map(function(interestingIndex) {
       var collapsedRow = [];
-      var interestingIndex = interestingIndexes[ii];
       for(var c = interestingIndex - distance + 1; c <= interestingIndex; c++) {
         Array.prototype.push.apply(collapsedRow, rows[c]);
       }
       collapsedRows.push(collapsedRow);
-    }
+    });
     rows = collapsedRows;
   }
   return rows;
