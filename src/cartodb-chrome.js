@@ -1,10 +1,10 @@
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
-var PROTOCOL = 'http';
-//var PROTOCOL = 'https';
+//var PROTOCOL = 'http';
+var PROTOCOL = 'https';
 
-var SERVER = 'localhost.lan:3000';
-//var SERVER = 'cartodb.com';
+//var SERVER = 'localhost.lan:3000';
+var SERVER = 'cartodb.com';
 //var SERVER = 'cartodb-staging.com';
 
 var PATH = '/api/v1/imports/';
