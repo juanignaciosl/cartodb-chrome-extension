@@ -204,7 +204,7 @@ function sendCsvWithApikey(csv, apikey, username) {
   var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + filename() + '&api_key=' + apikey; 
   console.log('url', url);
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', url + apikey, true);
+  xhr.open('POST', url, true);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
