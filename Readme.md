@@ -1,10 +1,16 @@
 # CartoDB Chrome extension
 
-This Chrome extension allows to import data tables into CartoDB with one click. It does its best in order to parse html tables, be understanding with its limitations ;)
+This Chrome extension allows to import data tables into CartoDB with one click. It does its best in order to parse html tables, please be understanding with its limitations ;) If you report any table that doesn't work as you expected we'll try to improve the extension. And you can contribute as well, too :-)
 
 ## Installation
 
-In order to try it, clone this repo and in Chrome pick More tools --> extensions, enable 'Developer mode' and click 'Load unpacked extension...' choosing the 'src' directory.
+### The hard way, if you want to contribute
+
+Clone this repo and in Chrome pick More tools --> extensions, enable 'Developer mode' and click 'Load unpacked extension...' choosing the 'src' directory.
+
+### The easy way, for everybody else
+
+Click <a href="dist/latest">download link</a> in Chrome.
 
 ## Usage
 
