@@ -10,7 +10,7 @@ Clone this repo and in Chrome pick More tools --> extensions, enable 'Developer 
 
 ### The easy way, for everybody else
 
-Click <a href="raw/master/dist/latest">download link</a> in Chrome.
+Click <a href="raw/master/dist/0.1/cartodb-chrome-extension-0.1.crx">download link</a> in Chrome.
 
 ## Usage
 
