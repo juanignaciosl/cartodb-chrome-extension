@@ -201,7 +201,7 @@ function sendCsv(csv) {
 }
 
 function sendCsvWithApikey(csv, apikey, username) {
-  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + filename() + '&api_key=' + apikey; 
+  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + filename() + '&api_key=' + apikey + '&content_guessing=true'; 
   console.log('url', url);
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
