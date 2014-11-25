@@ -22,8 +22,8 @@ document.addEventListener(
         var apikey = document.getElementById('apikey');
         var username = document.getElementById('username');
 
-        apikey.value = value.apikey;
-        username.value = value.username;
+        apikey.value = value.apikey || '';
+        username.value = value.username || '';
       });
     });
 
