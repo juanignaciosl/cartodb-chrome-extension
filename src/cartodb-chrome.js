@@ -205,7 +205,7 @@ function sendCsvWithApikey(csv, apikey, username) {
   console.log('url', url);
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
