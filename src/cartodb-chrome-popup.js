@@ -2,19 +2,29 @@ function saveClicked() {
   var apikey = document.getElementById('apikey');
   var username = document.getElementById('username');
 
+  var error = document.getElementById('required-data-error'); 
   if(apikey.value.length > 0 && username.value.length > 0) {
-    chrome.storage.sync.set({'apikey': apikey.value, 'username': username.value }, function() {
-      window.close();
-    });
+    error.style.display = 'none';
+    save(apikey.value, username.value, function() { window.close(); });
   } else {
-    alert('You must set the username and api key');
+    error.style.display = 'block';
   }
 }
+
+function dismissedClicked() {
+  save('', '', function() { window.close(); });
+}
+
+function save(apikey, username, callback) {
+  chrome.storage.sync.set({'apikey': apikey, 'username': username }, callback);
+}
+
 
 document.addEventListener(
     'DOMContentLoaded', 
     function () {
       document.getElementById("save-button").addEventListener('click', saveClicked);
+      document.getElementById("dismiss-button").addEventListener('click', dismissedClicked);
       document.getElementById('menu-image').src = chrome.extension.getURL("menu.png");
       document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
 
