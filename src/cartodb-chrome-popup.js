@@ -1,11 +1,13 @@
 function saveClicked() {
-  var apikey = document.getElementById('apikey');
-  var username = document.getElementById('username');
+  var apikey_field = document.getElementById('apikey');
+  var username_field = document.getElementById('username');
 
   var error = document.getElementById('required-data-error'); 
-  if(apikey.value.length > 0 && username.value.length > 0) {
+  var apikey = apikey_field.value.trim();
+  var username = username_field.value.trim();
+  if(apikey.length > 0 && username.length > 0) {
     error.style.display = 'none';
-    save(apikey.value, username.value, function() { window.close(); });
+    save(apikey, username, function() { window.close(); });
   } else {
     error.style.display = 'block';
   }

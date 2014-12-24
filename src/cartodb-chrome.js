@@ -191,7 +191,7 @@ function sendCsv(csv) {
   console.log(csv);
 
   chrome.storage.sync.get(['apikey', 'username'], function(value) {
-    if(typeof value.apikey === 'undefined' || typeof value.username === 'undefined') {
+    if(typeof value.apikey === 'undefined' || typeof value.username === 'undefined' || value.apikey.trim() === '' || value.username.trim() === '') {
       alert('You must click the CartoDB icon at the top bar and set your Api key');
     } else {
       sendCsvWithApikey(csv, value.apikey, value.username);
