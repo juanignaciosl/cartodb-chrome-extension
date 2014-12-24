@@ -1,5 +1,8 @@
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
+var DEFAULT_USERNAME = 'chrome-extension-test';
+var DEFAULT_APIKEY = '6160385a7c0ee34a5672f3ccb06b417bf9756377';
+
 //var PROTOCOL = 'http';
 var PROTOCOL = 'https';
 
@@ -192,10 +195,10 @@ function sendCsv(csv) {
 
   chrome.storage.sync.get(['apikey', 'username'], function(value) {
     if(typeof value.apikey === 'undefined' || typeof value.username === 'undefined' || value.apikey.trim() === '' || value.username.trim() === '') {
-      alert('You must click the CartoDB icon at the top bar and set your Api key');
-    } else {
-      sendCsvWithApikey(csv, value.apikey, value.username);
+      value.apikey = DEFAULT_APIKEY;
+      value.username = DEFAULT_USERNAME;
     }
+    sendCsvWithApikey(csv, value.apikey, value.username);
   });
 
 }
