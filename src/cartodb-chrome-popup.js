@@ -44,11 +44,7 @@ document.addEventListener(
       document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
 
       chrome.storage.sync.get(['apikey', 'username'], function(value) {
-        var apikey = document.getElementById('apikey');
-        var username = document.getElementById('username');
-
-        apikey.value = value.apikey || '';
-        username.value = value.username || '';
+        loadApikeyAndUsername(value.apikey, value.username);
         updateInterfaceState();
       });
     });
@@ -58,6 +54,14 @@ window.addEventListener('click',function(e){
       chrome.tabs.create({url:e.target.href})
     }
 });
+
+function loadApikeyAndUsername(apikeyValue, usernameValue) {
+  var apikey = document.getElementById('apikey');
+  var username = document.getElementById('username');
+
+  apikey.value = apikeyValue || '';
+  username.value = usernameValue || '';
+}
 
 function updateInterfaceState() {
   var apikey = document.getElementById('apikey');
