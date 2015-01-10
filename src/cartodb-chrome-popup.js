@@ -43,8 +43,9 @@ document.addEventListener(
       document.getElementById('menu-image').src = chrome.extension.getURL("menu.png");
       document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
 
-      chrome.storage.sync.get(['apikey', 'username'], function(value) {
+      chrome.storage.sync.get(['apikey', 'username', 'imports'], function(value) {
         loadApikeyAndUsername(value.apikey, value.username);
+        loadImports(value.imports);
         updateInterfaceState();
       });
     });
@@ -61,6 +62,32 @@ function loadApikeyAndUsername(apikeyValue, usernameValue) {
 
   apikey.value = apikeyValue || '';
   username.value = usernameValue || '';
+}
+
+function loadImports(imports) {
+  var importList = document.getElementById('tableImportList');
+  while(importList.hasChildNodes()) {
+    importList.removeChild(importList.firstChild);
+  }
+
+  imports = imports.sort(function(a, b) {
+    return a.timestamp - b.timestamp;
+  }).slice(0, 10);
+
+  for(var i in imports) {
+    var tableImport = imports[i];
+    importList.appendChild(createLi(tableImport.filename));
+  }
+
+  if(imports.length === 0) {
+    importList.appendChild(createLi('No imports yet, let\'s begin!'));
+  }
+}
+
+function createLi(text) {
+  var li = document.createElement('li');
+  li.innerText = text;
+  return li;
 }
 
 function updateInterfaceState() {

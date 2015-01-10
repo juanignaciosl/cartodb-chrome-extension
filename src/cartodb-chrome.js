@@ -201,21 +201,34 @@ function sendCsv(csv) {
 }
 
 function sendCsvWithApikey(csv, apikey, username) {
-  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + filename() + '&api_key=' + apikey + '&content_guessing=true'; 
+  var name = filename();
+  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
   console.log('url', url);
+
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
   xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        alert("Table sent! Please go to CartoDB to see your table");
+        var importResult = JSON.parse(xhr.responseText);
+        addImport(importResult, name, function() {
+          alert("Table sent! Please go to CartoDB to see your table.");
+        });
       } else {
         alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
       }
     }
   };
   xhr.send(csv);
+}
+
+function addImport(importResult, filename, callback) {
+  chrome.storage.sync.get(['imports'], function(value) {
+    var imports = typeof value.imports === 'undefined' ? [] : value.imports;
+    imports.push({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename });
+    chrome.storage.sync.set({'imports': imports}, callback);
+  });
 }
 
 function filename() {

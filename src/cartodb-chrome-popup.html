@@ -42,12 +42,20 @@
       .error button {
         background-color: red;
       }
+      
+      #imports ul {
+        list-style-type: none;
+      }
+      
+      #imports ul li {
+        text-align: left;
+      }
     </style>
 
     <script src="cartodb-chrome-popup.js"></script>
     <script src="cartodb-chrome.js"></script>
   </head>
-  <body onload="init()">
+  <body>
     <h1>CartoDB configuration</h1>
     <label>
       Username
@@ -58,15 +66,24 @@
       <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
     </label>
     <button id="save-button">Save</button>
+
     <div id="required-data-error" class="error">
       <p>You must set the username and api key. If you dismiss your credentials you won't be able to import tables.</p>
       <button id="dismiss-button">Dismiss credentials</button>
     </div>
+
     <div id="instructions">
       <p>You can get your Api key at <a href="https://www.cartodb.com">CartoDB</a>. Click your username at the top right menu in the page and press "Your Api keys" option.</p>
       <a href="http://www.cartodb.com"><img src="" id="menu-image"/></a>
       <a href="http://www.cartodb.com"><img src="" id="logo-image"/></a>
     </div>
+
+    <h2>Your imports</h2>
+    <div id="imports">
+      <ul id="tableImportList">
+      </ul>
+    </div>
+
   </body>
 </html>
 
