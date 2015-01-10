@@ -1,3 +1,7 @@
+function init() {
+  updateInterfaceState();
+}
+
 function saveClicked() {
   var apikey_field = document.getElementById('apikey');
   var username_field = document.getElementById('username');
@@ -6,11 +10,20 @@ function saveClicked() {
   var apikey = apikey_field.value.trim();
   var username = username_field.value.trim();
   if(apikey.length > 0 && username.length > 0) {
-    error.style.display = 'none';
     save(apikey, username, function() { window.close(); });
+    error.style.display = 'none';
   } else {
     error.style.display = 'block';
   }
+  updateInterfaceState();
+}
+
+function hideInstructions() {
+  document.getElementById('instructions').style.display = 'none';
+}
+
+function displayInstructions() {
+  document.getElementById('instructions').style.display = 'block';
 }
 
 function dismissedClicked() {
@@ -36,6 +49,7 @@ document.addEventListener(
 
         apikey.value = value.apikey || '';
         username.value = value.username || '';
+        updateInterfaceState();
       });
     });
 
@@ -45,3 +59,11 @@ window.addEventListener('click',function(e){
     }
 });
 
+function updateInterfaceState() {
+  var apikey = document.getElementById('apikey');
+  if(apikey.value === '') {
+    displayInstructions();
+  } else {
+    hideInstructions();
+  }
+}
