@@ -20,7 +20,7 @@ function CartoDBAPI() {
   }
 
   this.importURL = function(apikey, username, item_queue_id) {
-    return importURLRoot(username) + item_queue_id + '?' + apikey;
+    return importURLRoot(username) + item_queue_id + '?api_key=' + apikey;
   }
 
   this.sendCsvURL = function(apikey, username, name) {
@@ -132,7 +132,7 @@ CartoDBLocalStorage.prototype.setTableImportResult = function(tableImport, table
 
 function CartoDB(cartoDBAPI, cartoDBStorage) {
 
-  this.credentials = function(callback, noCredentialsCallback) {
+  var credentials = function(callback, noCredentialsCallback) {
     cartoDBStorage.credentials(function(apikey, username) {
       if(username === DEFAULT_USERNAME) {
         noCredentialsCallback();
@@ -145,6 +145,7 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
       });
     });
   }
+  this.credentials = credentials;
 
   var setCredentials = function(newApikey, newUsername, callback) {
     var processCredentialsChange = function(previousApikey, previousUsername) {
@@ -165,17 +166,19 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
     cartoDBStorage.imports(callback);
   }
 
-  this.tableImportResult = function(tableImport, callback) {
+  this.tableImportResult = function(tableImport, callback, errorCallback) {
     cartoDBStorage.tableImportResult(tableImport, function(tableImportResult) {
       if(tableImportResult != null && tableImportResult.state === 'complete') {
         callback(tableImportResult);
       } else {
-        cartoDBStorage.credentials(function(apikey, username) {
+        var loadTableImportResult = function(apikey, username) {
           cartoDBAPI.loadTableImportResult(apikey, username, tableImport, function(tableImportResult) {
             cartoDBStorage.setTableImportResult(tableImport, tableImportResult);
             callback(tableImportResult);
-          });
-        });
+          }, errorCallback);
+        };
+
+        cartoDBStorage.credentials(loadTableImportResult, loadTableImportResult);
       }
     });
   }
@@ -184,15 +187,22 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
     cartoDBStorage.addImport(importResult, filename, callback);
   }
 
-  this.sendCsv = function(name, csv, callback, errorCallback) {
-    cartoDBStorage.credentials(function(apikey, username) {
-      cartoDBAPI.sendCsv(apikey, username, name, csv, callback, errorCallback);
-    });
-  }
-
   this.tableURL = function(tableImportResult, callback) {
     cartoDBStorage.credentials(function(apikey, username) {
       callback(cartoDBAPI.tableURL(username, tableImportResult));
+    }, function() {
+      callback(cartoDBAPI.tableURL(username, tableImportResult));
+    });
+  }
+
+  this.sendCsv = function(name, csv, callback, errorCallback) {
+    var sendCsvHandler = function(apikey, username) {
+      cartoDBAPI.sendCsv(apikey, username, name, csv, callback, errorCallback);
+    }
+    credentials(function() {
+      cartoDBStorage.credentials(sendCsvHandler, sendCsvHandler);
+    }, function() {
+      cartoDBStorage.credentials(sendCsvHandler, sendCsvHandler);
     });
   }
 

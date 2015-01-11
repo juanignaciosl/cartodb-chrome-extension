@@ -1,6 +1,7 @@
 var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
 var TABLE_LINK = 'view';
+var TABLE_LINK_ERROR = 'error!';
 
 document.addEventListener(
     'DOMContentLoaded', 
@@ -108,6 +109,8 @@ function loadState(tableImport, stateLink) {
         });
       }
     }
+  }, function() {
+    stateLink.innerText = TABLE_LINK_ERROR;
   });
 }
 
