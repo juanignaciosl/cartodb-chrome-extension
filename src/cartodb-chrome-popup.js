@@ -95,8 +95,7 @@ function loadState(tableImport, stateLink) {
   } else {
     stateLink.innerText = 'Loading...';
       
-    cartoDB.loadState(tableImport, function(stateResult) {
-      var state = stateResult.state;
+    cartoDB.loadState(tableImport, function(state) {
       stateLink.innerText = state;
     });
   }

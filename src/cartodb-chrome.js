@@ -205,7 +205,7 @@ function sendCsvWithApikey(csv) {
 }
 
 function addImport(importResult, filename, callback) {
-  cartoDB.addImport({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' }, callback);
+  cartoDB.addImport({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename }, callback);
 }
 
 function filename() {

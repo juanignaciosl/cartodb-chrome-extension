@@ -44,7 +44,7 @@ CartoDBAPI.prototype.loadState = function(apikey, username, tableImport, callbac
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        callback(JSON.parse(xhr.responseText));
+        callback(JSON.parse(xhr.responseText).state);
       } else {
         if(typeof errorCallback != 'undefined') {
           errorCallback();
@@ -90,6 +90,22 @@ CartoDBLocalStorage.prototype.addImport = function(tableImport, callback) {
   });
 }
 
+CartoDBLocalStorage.prototype.stateId = function(tableImport) {
+  return tableImport.item_queue_id + '-state';  
+}
+
+CartoDBLocalStorage.prototype.state = function(tableImport, callback) {
+  var id = this.stateId(tableImport);
+  chrome.storage.sync.get(id, function(value) {
+    callback(value[id]);
+  });
+}
+
+CartoDBLocalStorage.prototype.setState = function(tableImport, state, callback) {
+  var savedObject = {};
+  savedObject[this.stateId(tableImport)]  = state
+  chrome.storage.sync.set(savedObject, callback);
+}
 
 
 function CartoDB(cartoDBAPI, cartoDBStorage) {
@@ -120,11 +136,21 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
   }
 
   this.loadState = function(tableImport, callback) {
-    cartoDBAPI.loadState(apikey, username, tableImport, callback);
+    cartoDBStorage.state(tableImport, function(state) {
+      if(state === 'complete') {
+        callback(state);
+      } else {
+        cartoDBAPI.loadState(apikey, username, tableImport, function(state) {
+          cartoDBStorage.setState(tableImport, state);
+          callback(state);
+        });
+      }
+    });
   }
 
   this.addImport = function(importResult, filename, callback) {
     cartoDBStorage.addImport(importResult, filename, callback);
+    cartoDBStorage.setState(importResult, 'new');
   }
 
   this.sendCsv = function(name, csv, callback, errorCallback) {
