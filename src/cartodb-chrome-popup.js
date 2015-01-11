@@ -1,5 +1,4 @@
-var cartoDBAPI;
-var cartoDBStorage = new CartoDBLocalStorage();
+var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
 document.addEventListener(
     'DOMContentLoaded', 
@@ -19,15 +18,13 @@ window.addEventListener('click',function(e){
 });
 
 function loadInitialData() {
-  cartoDBStorage.credentials(function(apikey, username) {
-    cartoDBAPI = new CartoDBAPI(apikey, username);
+  cartoDB.credentials(function(apikey, username) {
     toggleInstructions(false);
     loadApikeyAndUsername(apikey, username);
-    cartoDBStorage.imports(function(imports) {
+    cartoDB.imports(function(imports) {
       loadImports(imports);
     });
   }, function() {
-    cartoDBAPI = new CartoDBAPI();
     loadApikeyAndUsername('', '');
     toggleInstructions(true);
   });
@@ -53,10 +50,7 @@ function saveClicked() {
 }
 
 function save(apikey, username, callback) {
-  cartoDBStorage.setCredentials(apikey, username, function() {
-    cartoDBAPI = new CartoDBAPI(apikey, username);
-    callback();
-  });
+  cartoDB.setCredentials(apikey, username, callback);
 }
 
 function dismissedClicked() {
@@ -79,7 +73,7 @@ function loadImports(imports) {
 
   imports = imports.sort(function(a, b) {
     return a.timestamp - b.timestamp;
-  }).slice(0, 10);
+  }).reverse().slice(0, 10);
 
   for(var i in imports) {
     var tableImport = imports[i];
@@ -101,7 +95,7 @@ function loadState(tableImport, stateLink) {
   } else {
     stateLink.innerText = 'Loading...';
       
-    cartoDBAPI.loadState(tableImport, function(stateResult) {
+    cartoDB.loadState(tableImport, function(stateResult) {
       var state = stateResult.state;
       stateLink.innerText = state;
     });

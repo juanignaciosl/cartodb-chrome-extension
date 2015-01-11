@@ -1,4 +1,4 @@
-var cartoDBStorage = new CartoDBLocalStorage();
+var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
@@ -183,18 +183,17 @@ function valueDistances(values) {
 function sendCsv(csv) {
   console.log(csv);
 
-  cartoDBStorage.credentials(function(apikey, username) {
-    sendCsvWithApikey(csv, value.apikey, value.username);
+  cartoDB.credentials(function(apikey, username) {
+    sendCsvWithApikey(csv);
   }, function() {
       alert('You must click the CartoDB icon at the top bar and set your Api key');
   });
 
 }
 
-function sendCsvWithApikey(csv, apikey, username) {
+function sendCsvWithApikey(csv) {
   var name = filename();
 
-  var cartoDB = new CartoDBAPI(apikey, username);
   cartoDB.sendCsv(name, csv, function(importResult) {
     addImport(importResult, name, function() {
       alert("Table sent! You can see the status by clicking the top CartoDB icon at the browser bar. Please go to CartoDB to see your table.");
@@ -206,7 +205,7 @@ function sendCsvWithApikey(csv, apikey, username) {
 }
 
 function addImport(importResult, filename, callback) {
-  cartoDBStorage.addImport({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' }, callback);
+  cartoDB.addImport({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' }, callback);
 }
 
 function filename() {
