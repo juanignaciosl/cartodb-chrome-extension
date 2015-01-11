@@ -9,10 +9,12 @@ document.addEventListener(
       document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
 
       chrome.storage.sync.get(['apikey', 'username', 'imports'], function(value) {
-        cartoDB = new CartoDB(value.apikey, value.username);
-        loadApikeyAndUsername(value.apikey, value.username);
-        loadImports(value.imports);
-        updateInterfaceState();
+        if(value.apikey != '') {
+          cartoDB = new CartoDB(value.apikey, value.username);
+          loadApikeyAndUsername(value.apikey, value.username);
+          loadImports(value.imports);
+          updateInterfaceState();
+        }
       });
     });
 
@@ -52,6 +54,7 @@ function dismissedClicked() {
 
 function save(apikey, username, callback) {
   chrome.storage.sync.set({'apikey': apikey, 'username': username }, callback);
+  cartoDB = new CartoDB(value.apikey, value.username);
 }
 
 function loadApikeyAndUsername(apikeyValue, usernameValue) {
@@ -82,6 +85,8 @@ function loadImports(imports) {
   if(imports.length === 0) {
     importList.appendChild(createLi('No imports yet, let\'s begin!'));
   }
+
+  document.getElementById('imports').style.display = 'block';
 }
 
 function loadState(tableImport, stateLink) {

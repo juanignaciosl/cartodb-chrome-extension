@@ -197,7 +197,7 @@ function sendCsvWithApikey(csv, apikey, username) {
   var cartoDB = new CartoDB(apikey, username);
   cartoDB.sendCsv(name, csv, function(importResult) {
     addImport(importResult, name, function() {
-      alert("Table sent! Please go to CartoDB to see your table.");
+      alert("Table sent! You can see the status by clicking the top CartoDB icon at the browser bar. Please go to CartoDB to see your table.");
     });
   }, function() {
     alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
