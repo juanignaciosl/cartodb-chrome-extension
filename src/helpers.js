@@ -1,3 +1,7 @@
+function byId(id) {
+  return document.getElementById(id);
+}
+
 ////////////// Helper methods to handle histogram sparse arrays
 Array.prototype.sparseLength = function() {
   var c = 0;
