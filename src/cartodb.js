@@ -1,4 +1,7 @@
-function CartoDB(apikey, username) {
+function CartoDBAPI(apikey, username) {
+  apikey = typeof apikey === 'undefined' ? '' : apikey;
+  username = typeof username === 'undefined' ? '' : username;
+
   //var protocol = 'http';
   var protocol = 'https';
 
@@ -17,7 +20,7 @@ function CartoDB(apikey, username) {
   }
 }
 
-CartoDB.prototype.sendCsv = function(name, csv, callback, errorCallback) {
+CartoDBAPI.prototype.sendCsv = function(name, csv, callback, errorCallback) {
   var url = this.sendCsvURL(name);
   console.log('url', url);
 
@@ -36,7 +39,7 @@ CartoDB.prototype.sendCsv = function(name, csv, callback, errorCallback) {
   xhr.send(csv);
 }
 
-CartoDB.prototype.loadState = function(tableImport, callback, errorCallback) {
+CartoDBAPI.prototype.loadState = function(tableImport, callback, errorCallback) {
   var url = this.importURL(tableImport.item_queue_id);
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
@@ -53,4 +56,39 @@ CartoDB.prototype.loadState = function(tableImport, callback, errorCallback) {
     }
   };
   xhr.send();
+}
+
+
+function CartoDBLocalStorage() {
+}
+
+CartoDBLocalStorage.prototype.credentials = function(callback, noCredentialsCallback) {
+  chrome.storage.sync.get(['apikey', 'username'], function(value) {
+    var apikey = typeof value.apikey === 'undefined' || value.apikey.trim() === '' ? '' : value.apikey.trim();
+    var username = typeof value.username === 'undefined' || value.username.trim() === '' ? '' : value.username;
+
+    if(apikey === '' || username === '') {
+      noCredentialsCallback();
+    } else {
+      callback(apikey, username);
+    }
+  });
+}
+
+CartoDBLocalStorage.prototype.setCredentials = function(apikey, username, callback) {
+  chrome.storage.sync.set({'apikey': apikey, 'username': username }, callback);
+}
+
+CartoDBLocalStorage.prototype.imports = function(callback) {
+  chrome.storage.sync.get(['imports'], function(value) {
+    var imports = typeof value.imports === 'undefined' ? [] : value.imports;
+    callback(imports);
+  });
+}
+
+CartoDBLocalStorage.prototype.addImport = function(tableImport, callback) {
+  this.imports(function(imports) {
+    imports.push(tableImport);
+    chrome.storage.sync.set({'imports': imports}, callback);
+  });
 }

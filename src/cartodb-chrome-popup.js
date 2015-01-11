@@ -1,4 +1,5 @@
-var cartoDB;
+var cartoDBAPI;
+var cartoDBStorage = new CartoDBLocalStorage();
 
 document.addEventListener(
     'DOMContentLoaded', 
@@ -8,14 +9,7 @@ document.addEventListener(
       document.getElementById('menu-image').src = chrome.extension.getURL("menu.png");
       document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
 
-      chrome.storage.sync.get(['apikey', 'username', 'imports'], function(value) {
-        if(value.apikey != '') {
-          cartoDB = new CartoDB(value.apikey, value.username);
-          loadApikeyAndUsername(value.apikey, value.username);
-          loadImports(value.imports);
-          updateInterfaceState();
-        }
-      });
+      loadInitialData();
     });
 
 window.addEventListener('click',function(e){
@@ -24,6 +18,21 @@ window.addEventListener('click',function(e){
     }
 });
 
+function loadInitialData() {
+  cartoDBStorage.credentials(function(apikey, username) {
+    cartoDBAPI = new CartoDBAPI(apikey, username);
+    toggleInstructions(false);
+    loadApikeyAndUsername(apikey, username);
+    cartoDBStorage.imports(function(imports) {
+      loadImports(imports);
+    });
+  }, function() {
+    cartoDBAPI = new CartoDBAPI();
+    loadApikeyAndUsername('', '');
+    toggleInstructions(true);
+  });
+}
+
 function saveClicked() {
   var apikey_field = document.getElementById('apikey');
   var username_field = document.getElementById('username');
@@ -31,30 +40,27 @@ function saveClicked() {
   var error = document.getElementById('required-data-error'); 
   var apikey = apikey_field.value.trim();
   var username = username_field.value.trim();
-  if(apikey.length > 0 && username.length > 0) {
-    save(apikey, username, function() { window.close(); });
-    error.style.display = 'none';
+  var hasCredentials = apikey.length > 0 && username.length > 0; 
+  if(hasCredentials) {
+    save(apikey, username, function() {
+      error.style.display = 'none';
+      loadInitialData();
+    });
   } else {
     error.style.display = 'block';
   }
-  updateInterfaceState();
+  toggleInstructions(hasCredentials);
 }
 
-function hideInstructions() {
-  document.getElementById('instructions').style.display = 'none';
-}
-
-function displayInstructions() {
-  document.getElementById('instructions').style.display = 'block';
+function save(apikey, username, callback) {
+  cartoDBStorage.setCredentials(apikey, username, function() {
+    cartoDBAPI = new CartoDBAPI(apikey, username);
+    callback();
+  });
 }
 
 function dismissedClicked() {
   save('', '', function() { window.close(); });
-}
-
-function save(apikey, username, callback) {
-  chrome.storage.sync.set({'apikey': apikey, 'username': username }, callback);
-  cartoDB = new CartoDB(value.apikey, value.username);
 }
 
 function loadApikeyAndUsername(apikeyValue, usernameValue) {
@@ -95,7 +101,7 @@ function loadState(tableImport, stateLink) {
   } else {
     stateLink.innerText = 'Loading...';
       
-    cartoDB.loadState(tableImport, function(stateResult) {
+    cartoDBAPI.loadState(tableImport, function(stateResult) {
       var state = stateResult.state;
       stateLink.innerText = state;
     });
@@ -108,11 +114,10 @@ function createElement(tagName, html) {
   return li;
 }
 
-function updateInterfaceState() {
-  var apikey = document.getElementById('apikey');
-  if(apikey.value === '') {
-    displayInstructions();
+function toggleInstructions(show) {
+  if(show) {
+    document.getElementById('instructions').style.display = 'block';
   } else {
-    hideInstructions();
+    document.getElementById('instructions').style.display = 'none';
   }
 }

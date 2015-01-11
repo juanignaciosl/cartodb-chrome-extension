@@ -21,7 +21,7 @@
   ],
   "background": {
     "persistent": false,
-    "scripts": [ "helpers.js", "cartodb-chrome-background.js", "cartodb.js" ]
+    "scripts": [ "cartodb.js", "helpers.js", "cartodb-chrome-background.js" ]
   },
   "content_scripts": [
   {

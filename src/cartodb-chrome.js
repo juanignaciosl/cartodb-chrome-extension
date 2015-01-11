@@ -1,3 +1,5 @@
+var cartoDBStorage = new CartoDBLocalStorage();
+
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
 var MIN_ROWS = 4
@@ -181,12 +183,10 @@ function valueDistances(values) {
 function sendCsv(csv) {
   console.log(csv);
 
-  chrome.storage.sync.get(['apikey', 'username'], function(value) {
-    if(typeof value.apikey === 'undefined' || typeof value.username === 'undefined' || value.apikey.trim() === '' || value.username.trim() === '') {
+  cartoDBStorage.credentials(function(apikey, username) {
+    sendCsvWithApikey(csv, value.apikey, value.username);
+  }, function() {
       alert('You must click the CartoDB icon at the top bar and set your Api key');
-    } else {
-      sendCsvWithApikey(csv, value.apikey, value.username);
-    }
   });
 
 }
@@ -194,7 +194,7 @@ function sendCsv(csv) {
 function sendCsvWithApikey(csv, apikey, username) {
   var name = filename();
 
-  var cartoDB = new CartoDB(apikey, username);
+  var cartoDB = new CartoDBAPI(apikey, username);
   cartoDB.sendCsv(name, csv, function(importResult) {
     addImport(importResult, name, function() {
       alert("Table sent! You can see the status by clicking the top CartoDB icon at the browser bar. Please go to CartoDB to see your table.");
@@ -206,11 +206,7 @@ function sendCsvWithApikey(csv, apikey, username) {
 }
 
 function addImport(importResult, filename, callback) {
-  chrome.storage.sync.get(['imports'], function(value) {
-    var imports = typeof value.imports === 'undefined' ? [] : value.imports;
-    imports.push({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' });
-    chrome.storage.sync.set({'imports': imports}, callback);
-  });
+  cartoDBStorage.addImport({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' }, callback);
 }
 
 function filename() {
