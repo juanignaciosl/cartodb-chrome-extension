@@ -17,7 +17,7 @@ function CartoDBAPI() {
   }
 
   this.importURL = function(apikey, username, item_queue_id) {
-    return importURLRoot(username) + item_queue_id + '?' + apikey;
+    return importURLRoot(username) + item_queue_id + '?api_key=' + apikey;
   }
 
   this.sendCsvURL = function(apikey, username, name) {
