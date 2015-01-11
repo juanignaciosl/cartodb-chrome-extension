@@ -1,5 +1,7 @@
 var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
+var TABLE_LINK = 'view';
+
 document.addEventListener(
     'DOMContentLoaded', 
     function () {
@@ -90,15 +92,20 @@ function loadImports(imports) {
 }
 
 function loadState(tableImport, stateLink) {
-  if(tableImport.state === 'completed') {
-      stateLink.innerText = tableImport.state;
-  } else {
-    stateLink.innerText = 'Loading...';
-      
-    cartoDB.loadState(tableImport, function(state) {
-      stateLink.innerText = state;
-    });
-  }
+  stateLink.innerText = 'Loading...';
+
+  cartoDB.tableImportResult(tableImport, function(tableImportResult) {
+    if(tableImportResult != null) {
+      stateLink.innerText = tableImportResult.state;
+
+      if(tableImportResult.state === 'complete') {
+        cartoDB.tableURL(tableImportResult, function(url) {
+          stateLink.innerText = TABLE_LINK;
+          stateLink.href = url;
+        });
+      }
+    }
+  });
 }
 
 function createElement(tagName, html) {
