@@ -7,6 +7,8 @@ var MIN_COLS = 2
 
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
+var SEND_CSV_OK = "Table sent! You can see the status by clicking the top CartoDB icon at the browser bar. Please go to CartoDB to see your table.";
+var SEND_CSV_ERROR = "Couldn't contact with the import service. Server is down or connection is flacky, please retry later.";
 
 ////////////// Display button methods
 function makeTablesImportables() {
@@ -196,10 +198,10 @@ function sendCsvWithApikey(csv) {
 
   cartoDB.sendCsv(name, csv, function(importResult) {
     addImport(importResult, name, function() {
-      alert("Table sent! You can see the status by clicking the top CartoDB icon at the browser bar. Please go to CartoDB to see your table.");
+      alert(SEND_CSV_OK);
     });
   }, function() {
-    alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
+    alert(SEND_CSV_ERROR);
   });
 
 }
