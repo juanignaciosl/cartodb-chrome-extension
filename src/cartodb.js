@@ -11,6 +11,29 @@ function CartoDB(apikey, username) {
   this.importURL = function(item_queue_id) {
     return protocol + '://' + username + '.' +  server + importPath + item_queue_id + '?' + apikey;
   }
+
+  this.sendCsvURL = function(name) {
+    return protocol + '://' + username + '.' + server + importPath + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
+  }
+}
+
+CartoDB.prototype.sendCsv = function(name, csv, callback, errorCallback) {
+  var url = this.sendCsvURL(name);
+  console.log('url', url);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url, true);
+  xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
+  xhr.onreadystatechange = function() { 
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        callback(JSON.parse(xhr.responseText));
+      } else {
+        errorCallback();
+      }
+    }
+  };
+  xhr.send(csv);
 }
 
 CartoDB.prototype.loadState = function(tableImport, callback, errorCallback) {

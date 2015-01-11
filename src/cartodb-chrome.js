@@ -1,14 +1,5 @@
 var ICON_URL = chrome.extension.getURL("cartodb.png");
 
-//var PROTOCOL = 'http';
-var PROTOCOL = 'https';
-
-//var SERVER = 'localhost.lan:3000';
-var SERVER = 'cartodb.com';
-//var SERVER = 'cartodb-staging.com';
-
-var PATH = '/api/v1/imports/';
-
 var MIN_ROWS = 4
 var MIN_COLS = 2
 
@@ -202,25 +193,16 @@ function sendCsv(csv) {
 
 function sendCsvWithApikey(csv, apikey, username) {
   var name = filename();
-  var url = PROTOCOL + '://' + username + '.' + SERVER + PATH + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
-  console.log('url', url);
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
-  xhr.onreadystatechange = function() { 
-    if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
-        var importResult = JSON.parse(xhr.responseText);
-        addImport(importResult, name, function() {
-          alert("Table sent! Please go to CartoDB to see your table.");
-        });
-      } else {
-        alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
-      }
-    }
-  };
-  xhr.send(csv);
+  var cartoDB = new CartoDB(apikey, username);
+  cartoDB.sendCsv(name, csv, function(importResult) {
+    addImport(importResult, name, function() {
+      alert("Table sent! Please go to CartoDB to see your table.");
+    });
+  }, function() {
+    alert("Couldn't contact with the import service. Server is down or connection is flacky, please retry later.");
+  });
+
 }
 
 function addImport(importResult, filename, callback) {
