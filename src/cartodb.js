@@ -8,12 +8,16 @@ function CartoDBAPI() {
 
   var importPath = '/api/v1/imports/';
 
+  var importURLRoot = function(username) {
+    return protocol + '://' + username + '.' + server + importPath;
+  }
+
   this.importURL = function(apikey, username, item_queue_id) {
-    return protocol + '://' + username + '.' +  server + importPath + item_queue_id + '?' + apikey;
+    return importURLRoot(username) + item_queue_id + '?' + apikey;
   }
 
   this.sendCsvURL = function(apikey, username, name) {
-    return protocol + '://' + username + '.' + server + importPath + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
+    return importURLRoot(username) + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
   }
 }
 
@@ -83,6 +87,10 @@ CartoDBLocalStorage.prototype.imports = function(callback) {
   });
 }
 
+CartoDBLocalStorage.prototype.setImports = function(imports, callback) {
+  chrome.storage.sync.set({imports: imports}, callback);
+}
+
 CartoDBLocalStorage.prototype.addImport = function(tableImport, callback) {
   this.imports(function(imports) {
     imports.push(tableImport);
@@ -129,6 +137,10 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
     username = newUsername;
 
     cartoDBStorage.setCredentials(apikey, username, callback);
+
+    if(apikey === '' || username === '') {
+      cartoDBStorage.setImports([]);
+    }
   }
 
   this.imports = function(callback) {

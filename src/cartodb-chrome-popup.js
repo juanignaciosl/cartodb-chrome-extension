@@ -83,7 +83,7 @@ function loadImports(imports) {
   }
 
   if(imports.length === 0) {
-    importList.appendChild(createLi('No imports yet, let\'s begin!'));
+    importList.appendChild(createElement('li', 'No imports yet, let\'s begin!'));
   }
 
   document.getElementById('imports').style.display = 'block';
