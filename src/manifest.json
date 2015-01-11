@@ -21,13 +21,13 @@
   ],
   "background": {
     "persistent": false,
-    "scripts": [ "cartodb-chrome-background.js" ]
+    "scripts": [ "helpers.js", "cartodb-chrome-background.js", "cartodb.js" ]
   },
   "content_scripts": [
   {
     "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
     "css": ["cartodb-chrome.css"],
-    "js": ["helpers.js", "cartodb-chrome.js", "sprintf.min.js" ],
+    "js": ["helpers.js", "cartodb-chrome.js", "sprintf.min.js", "cartodb.js"  ],
     "all_frames": true
   } ],
   "web_accessible_resources": [

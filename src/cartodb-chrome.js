@@ -226,7 +226,7 @@ function sendCsvWithApikey(csv, apikey, username) {
 function addImport(importResult, filename, callback) {
   chrome.storage.sync.get(['imports'], function(value) {
     var imports = typeof value.imports === 'undefined' ? [] : value.imports;
-    imports.push({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename });
+    imports.push({ item_queue_id: importResult.item_queue_id, timestamp: new Date().getTime(), filename: filename, state: 'new' });
     chrome.storage.sync.set({'imports': imports}, callback);
   });
 }
