@@ -44,6 +44,8 @@ function saveClicked() {
     save(apikey, username, function() {
       error.style.display = 'none';
       loadInitialData();
+      chrome.runtime.sendMessage({type: 'SAVE_USER_OK'});
+      window.close()
     });
   } else {
     error.style.display = 'block';
