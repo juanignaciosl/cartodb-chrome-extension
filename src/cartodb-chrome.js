@@ -242,4 +242,12 @@ function closestTable(element) {
   return element;
 }
 
-makeTablesImportables();
+function currentDomain() {
+  return window.location.host.split(':')[0];
+}
+
+var blacklistedDomains = new DomainBlacklist(['localhost.lan', 'cartodb.com']);
+
+if(!blacklistedDomains.contains(currentDomain()) == -1) {
+  makeTablesImportables();
+}
