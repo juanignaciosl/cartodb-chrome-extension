@@ -248,6 +248,6 @@ function currentDomain() {
 
 var blacklistedDomains = new DomainBlacklist(['localhost.lan', 'cartodb.com']);
 
-if(!blacklistedDomains.contains(currentDomain()) == -1) {
+if(!blacklistedDomains.contains(currentDomain())) {
   makeTablesImportables();
 }
