@@ -1,6 +1,6 @@
 var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
-var ICON_URL = chrome.extension.getURL("cartodb.png");
+var ICON_URL = chrome.extension.getURL("cartodb-stroke.png");
 
 var MIN_ROWS = 4
 var MIN_COLS = 2
@@ -42,9 +42,15 @@ function addImportButton(table) {
   button.className = 'cartodb-import-button';
   button.onclick = importTableFromButton;
   button.title = BUTTON_TITLE;
-  button.style.backgroundImage = "url('"+ICON_URL+"')";
+  var style = button.style;
+  style.backgroundImage = "url('"+ICON_URL+"')";
+  style.opacity = 0;
 
   table.parentNode.insertBefore(button, table);
+
+  style.top = (button.offsetTop - 20) + 'px';
+  style.left = (button.offsetLeft - 20) + 'px';
+  style.opacity = null;
 }
 
 /////////////// Importing

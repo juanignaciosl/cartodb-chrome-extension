@@ -9,6 +9,10 @@
   opacity: .6;
 }
 
+.cartodb-import-button {
+  -webkit-filter: drop-shadow(2px 2px 4px #006);
+}
+
 .cartodb-import-button:hover {
   opacity: .9;
 }
