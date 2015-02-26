@@ -20,8 +20,12 @@ function CartoDBAPI() {
     return importURLRoot(username) + item_queue_id + '?api_key=' + apikey;
   }
 
+  this.sendImportURL = function(apikey, username) {
+    return importURLRoot(username) + '?api_key=' + apikey + '&content_guessing=true'; 
+  }
+
   this.sendCsvURL = function(apikey, username, name) {
-    return importURLRoot(username) + '?filename=' + name + '&api_key=' + apikey + '&content_guessing=true'; 
+    return this.sendImportURL(apikey, username) + '&filename=' + name; 
   }
 
   this.tableURL = function(username, tableImportResult) {
@@ -31,8 +35,15 @@ function CartoDBAPI() {
 
 CartoDBAPI.prototype.sendCsv = function(apikey, username, name, csv, callback, errorCallback) {
   var url = this.sendCsvURL(apikey, username, name);
-  console.log('url', url);
+  this.xmlHttpRequest(url, callback, errorCallback).send(csv);
+}
 
+CartoDBAPI.prototype.sendFileUrl = function(apikey, username, fileUrl, callback, errorCallback) {
+  var url = this.sendImportURL(apikey, username);
+  this.xmlHttpRequest(url, callback, errorCallback).send('{ "url": "' + fileUrl + '" }');
+}
+
+CartoDBAPI.prototype.xmlHttpRequest = function(url, callback, errorCallback) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
   xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
@@ -45,8 +56,7 @@ CartoDBAPI.prototype.sendCsv = function(apikey, username, name, csv, callback, e
       }
     }
   };
-  console.log('sending csv');
-  xhr.send(csv);
+  return xhr;
 }
 
 CartoDBAPI.prototype.loadTableImportResult = function(apikey, username, tableImport, callback, errorCallback) {
@@ -177,6 +187,10 @@ function CartoDB(cartoDBAPI, cartoDBStorage) {
 
   this.sendCsv = function(name, csv, callback, errorCallback) {
     cartoDBAPI.sendCsv(apikey, username, name, csv, callback, errorCallback);
+  }
+
+  this.sendFileUrl = function(fileUrl, callback, errorCallback) {
+    cartoDBAPI.sendFileUrl(apikey, username, fileUrl, callback, errorCallback);
   }
 
   this.tableURL = function(tableImportResult, callback) {

@@ -8,12 +8,16 @@ var MIN_COLS = 2
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
 
-////////////// Display button methods
+////////////// Display button methods at tables
 function makeTablesImportables() {
 	var tables = importableTables();
   tables.map(function(table) {
-    addImportButton(table);
+    addImportButton(table, importTableFromButton);
   });
+}
+
+function importTableFromButton(event) {
+  importTable(event.srcElement.nextSibling);
 }
 
 function importableTables() {
@@ -37,29 +41,53 @@ function filterSmallTables(tables) {
   });
 }
 
-function addImportButton(table) {
+////////////// Display button methods at links
+function makeLinksImportables() {
+	var links = importableLinks();
+  links.map(function(link) {
+    addImportButton(link, importLinkFromButton);
+  });
+}
+
+function importLinkFromButton(event) {
+  importLink(event.srcElement.nextSibling);
+}
+
+function addImportButton(element, onclickHandler) {
   var button = document.createElement('div');
   button.className = 'cartodb-import-button';
-  button.onclick = importTableFromButton;
+  button.onclick = onclickHandler;
   button.title = BUTTON_TITLE;
   var style = button.style;
   style.backgroundImage = "url('"+ICON_URL+"')";
   style.opacity = 0;
 
-  table.parentNode.insertBefore(button, table);
+  element.parentNode.insertBefore(button, element);
 
   style.top = (button.offsetTop - 20) + 'px';
   style.left = (button.offsetLeft - 20) + 'px';
   style.opacity = null;
 }
 
-/////////////// Importing
-function importTableFromButton(event) {
-  importTable(event.srcElement.nextSibling);
+function importableLinks() {
+  var links =  [].slice.call(document.getElementsByTagName('a'));
+  links = filterLinksWithKnownExtensions(links);
+  return links;
 }
 
+function filterLinksWithKnownExtensions(sourceLinks) {
+  return sourceLinks.filter(function(link) {
+    return link.href.slice(-3) === 'csv';
+  });
+}
+
+/////////////// Importing
 function importTable(table) {
   sendCsv(toCsv(table));
+}
+
+function importLink(link) {
+  sendFileUrl(link.href);
 }
 
 function toCsv(table) {
@@ -191,23 +219,41 @@ function sendCsv(csv) {
 
   cartoDB.credentials(function(apikey, username) {
     sendCsvWithApikey(csv);
-  }, function() {
-      alert('You must click the CartoDB icon at the top bar and set your Api key');
-  });
+  }, noCredentialsError);
+}
 
+function sendFileUrl(url) {
+  console.log(url);
+
+  cartoDB.credentials(function(apikey, username) {
+    sendFileUrlWithApikey(url);
+  }, noCredentialsError);
+}
+
+function noCredentialsError() {
+  alert('You must click the CartoDB icon at the top bar and set your Api key');
 }
 
 function sendCsvWithApikey(csv) {
   var name = filename();
 
   cartoDB.sendCsv(name, csv, function(importResult) {
-    addImport(importResult, name, function() {
-      chrome.runtime.sendMessage({type: 'SEND_CSV_OK'});
-    });
-  }, function() {
-      chrome.runtime.sendMessage({type: 'SEND_CSV_ERROR'});
-  });
+    addImport(importResult, name, sendImportOkHandler);
+  }, sendImportErrorHandler);
+}
 
+function sendFileUrlWithApikey(url) {
+  cartoDB.sendFileUrl(url, function(importResult) {
+    addImport(importResult, name, sendImportOkHandler);
+  }, sendImportErrorHandler);
+}
+
+function sendImportOkHandler() {
+  chrome.runtime.sendMessage({type: 'SEND_OK'});
+}
+
+function sendImportErrorHandler() {
+  chrome.runtime.sendMessage({type: 'SEND_ERROR'});
 }
 
 function addImport(importResult, filename, callback) {
@@ -256,4 +302,5 @@ var blacklistedDomains = new DomainBlacklist(['localhost.lan', 'cartodb.com']);
 
 if(!blacklistedDomains.contains(currentDomain())) {
   makeTablesImportables();
+  makeLinksImportables();
 }
