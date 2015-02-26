@@ -35,18 +35,18 @@ function CartoDBAPI() {
 
 CartoDBAPI.prototype.sendCsv = function(apikey, username, name, csv, callback, errorCallback) {
   var url = this.sendCsvURL(apikey, username, name);
-  this.xmlHttpRequest(url, callback, errorCallback).send(csv);
+  this.xmlHttpRequest(url, 'text/plain', callback, errorCallback).send(csv);
 }
 
 CartoDBAPI.prototype.sendFileUrl = function(apikey, username, fileUrl, callback, errorCallback) {
   var url = this.sendImportURL(apikey, username);
-  this.xmlHttpRequest(url, callback, errorCallback).send('{ "url": "' + fileUrl + '" }');
+  this.xmlHttpRequest(url, 'application/json', callback, errorCallback).send('{ "url": "' + fileUrl + '" }');
 }
 
-CartoDBAPI.prototype.xmlHttpRequest = function(url, callback, errorCallback) {
+CartoDBAPI.prototype.xmlHttpRequest = function(url, mime, callback, errorCallback) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', url, true);
-  xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
+  xhr.setRequestHeader('Content-type', mime + ';charset=UTF-8');
   xhr.onreadystatechange = function() { 
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
