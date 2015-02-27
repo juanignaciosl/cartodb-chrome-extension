@@ -5,6 +5,8 @@ var ICON_URL = chrome.extension.getURL("cartodb-stroke.png");
 var MIN_ROWS = 4
 var MIN_COLS = 2
 
+var SUPPORTED_EXTENSIONS = ['csv', 'geojson', 'kml', 'xls', 'xlsx', 'zip'];
+
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
 
@@ -93,8 +95,14 @@ function importableLinks() {
 
 function filterLinksWithKnownExtensions(sourceLinks) {
   return sourceLinks.filter(function(link) {
-    return link.href.slice(-3) === 'csv';
+    var extension = extractExtension(link);
+    return SUPPORTED_EXTENSIONS.indexOf(extension) != -1;
   });
+}
+
+function extractExtension(url) {
+  var fragments = url.href.split('.');
+  return fragments[fragments.length - 1].toLowerCase();
 }
 
 /////////////// Importing
