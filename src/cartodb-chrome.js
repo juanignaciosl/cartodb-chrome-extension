@@ -5,6 +5,10 @@ var ICON_URL = chrome.extension.getURL("cartodb-stroke.png");
 var MIN_ROWS = 4
 var MIN_COLS = 2
 
+var DIRECT_IMPORT_EXTENSIONS = ['csv', 'geojson', 'kml', 'xls', 'xlsx' ];
+var ADDITIONAL_RIGHT_CLICK_EXTENSIONS = [ 'zip' ];
+var SUPPORTED_EXTENSIONS = DIRECT_IMPORT_EXTENSIONS.concat(ADDITIONAL_RIGHT_CLICK_EXTENSIONS);
+
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
 
@@ -12,8 +16,22 @@ var BUTTON_TITLE = 'Click to import to CartoDB';
 function makeTablesImportables() {
 	var tables = importableTables();
   tables.map(function(table) {
-    addImportButton(table, importTableFromButton);
+    addImportButton(table, tableImportButton(importTableFromButton));
   });
+}
+
+function importButton(onclickHandler) {
+  var button = document.createElement('div');
+  button.className = 'cartodb-import-button';
+  button.onclick = onclickHandler;
+  button.title = BUTTON_TITLE;
+  return button;
+}
+
+function tableImportButton(onclickHandler) {
+  var button = importButton(onclickHandler);
+  button.className += ' table-import';
+  return button;
 }
 
 function importTableFromButton(event) {
@@ -43,21 +61,23 @@ function filterSmallTables(tables) {
 
 ////////////// Display button methods at links
 function makeLinksImportables() {
-	var links = importableLinks();
+	var links = directImportableLinks();
   links.map(function(link) {
-    addImportButton(link, importLinkFromButton);
+    addImportButton(link, linkImportButton(importLinkFromButton));
   });
+}
+
+function linkImportButton(onclickHandler) {
+  var button = importButton(onclickHandler);
+  button.className += ' link-import';
+  return button;
 }
 
 function importLinkFromButton(event) {
   importLink(event.srcElement.nextSibling);
 }
 
-function addImportButton(element, onclickHandler) {
-  var button = document.createElement('div');
-  button.className = 'cartodb-import-button';
-  button.onclick = onclickHandler;
-  button.title = BUTTON_TITLE;
+function addImportButton(element, button) {
   var style = button.style;
   style.backgroundImage = "url('"+ICON_URL+"')";
   style.opacity = 0;
@@ -69,16 +89,30 @@ function addImportButton(element, onclickHandler) {
   style.opacity = null;
 }
 
-function importableLinks() {
+function directImportableLinks() {
   var links =  [].slice.call(document.getElementsByTagName('a'));
-  links = filterLinksWithKnownExtensions(links);
+  links = filterLinksWithDirectImportExtensions(links);
   return links;
 }
 
-function filterLinksWithKnownExtensions(sourceLinks) {
+function filterLinksWithDirectImportExtensions(sourceLinks) {
   return sourceLinks.filter(function(link) {
-    return link.href.slice(-3) === 'csv';
+    return isDirectImportLinkSupported(link.href);
   });
+}
+
+function isDirectImportLinkSupported(url) {
+  return DIRECT_IMPORT_EXTENSIONS.indexOf(extractExtension(url)) != -1;
+}
+
+function isLinkSupported(url) {
+  return SUPPORTED_EXTENSIONS.indexOf(extractExtension(url)) != -1;
+}
+
+function extractExtension(urlHref) {
+  var urlWithoutParameters = urlHref.split('?')[0];
+  var fragments = urlWithoutParameters.split('.');
+  return fragments[fragments.length - 1].toLowerCase();
 }
 
 /////////////// Importing
@@ -242,9 +276,14 @@ function sendCsvWithApikey(csv) {
   }, sendImportErrorHandler);
 }
 
+function extractNameFromUrl(url) {
+  var parts = url.split('/');
+  return parts[parts.length - 1];
+}
+
 function sendFileUrlWithApikey(url) {
   cartoDB.sendFileUrl(url, function(importResult) {
-    addImport(importResult, name, sendImportOkHandler);
+    addImport(importResult, extractNameFromUrl(url), sendImportOkHandler);
   }, sendImportErrorHandler);
 }
 
@@ -278,11 +317,19 @@ document.addEventListener("mousedown", function(event){
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if(request == "getClickedEl" && clickedEl != null) {
-      var table = closestTable(clickedEl);
-      if(table == null) {
-        alert("Click on a table to import data into CartoDB");
+      if(clickedEl.tagName === 'A') {
+        if(isLinkSupported(clickedEl.href)) {
+          importLink(clickedEl);
+        } else {
+          alert("This file (" + clickedEl.href + ") is not suppported. Supported extensions: " + SUPPORTED_EXTENSIONS.join(', ') + ".");
+        }
       } else {
-        importTable(table);
+        var table = closestTable(clickedEl);
+        if(table != null) {
+          alert("Right click on a table or a link to import a dataset into CartoDB");
+        } else {
+          importTable(table);
+        }
       }
     }
 });

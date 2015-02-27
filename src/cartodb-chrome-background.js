@@ -37,11 +37,12 @@ function createNotification(id, title, message) {
 }
 
 chrome.runtime.onMessage.addListener(function(msg, sender) {
+  var timestamp = new Date().getTime();
   if(msg.type === 'SEND_OK') {
-    createNotification('import-notification', SEND_TITLE, SEND_MESSAGE);
+    createNotification('import-notification-' + timestamp, SEND_TITLE, SEND_MESSAGE);
   } else if(msg.type === 'SEND_ERROR') {
-    createNotification('import-notification', SEND_ERROR_TITLE, SEND_ERROR_MESSAGE);
+    createNotification('import-notification-' + timestamp, SEND_ERROR_TITLE, SEND_ERROR_MESSAGE);
   } else if(msg.type === 'SAVE_USER_OK') {
-    createNotification('user-save', SAVE_USER_OK_TITLE, SAVE_USER_OK_MESSAGE);
+    createNotification('user-save-' + timestamp, SAVE_USER_OK_TITLE, SAVE_USER_OK_MESSAGE);
   }
 });

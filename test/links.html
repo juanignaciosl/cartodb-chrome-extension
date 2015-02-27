@@ -8,8 +8,31 @@
   </head>
   <body>
     <p>Examples of links and the reason why they have a CartoDB import button or not.</p>
+    <h3>Links that should not work</h3>
     <ul>
-      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.csv">CSV file</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/nonexisting-no-extension">No extension</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/nonexisting-short-extension.a">Short extension</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/nonexisting-nonsupported-extension.doc">Doc</a></li>
+    </ul>
+
+    <h3>Basic links that should display an icon</h3>
+    <ul>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.csv">CSV</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.geojson">Geojson</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.kml">KML</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.xls">XLS</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.xlsx">XLSX</a></li>
+    </ul>
+
+    <h3>Links that are too common for icon but that can be imported by right-click</h3>
+    <ul>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.zip">ZIP</a></li>
+    </ul>
+
+    <h3>Exploring different links that should also work</h3>
+    <ul>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file2.CSV">Upcase CSV</a></li>
+      <li><a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file2.CSV?aparam=avalue&another=one">Parameters after extension (neither sample download nor importing work, but an actual url will)</a></li>
     </ul>
   </body>
 </html>

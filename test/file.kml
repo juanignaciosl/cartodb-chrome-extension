@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="file" id="file">
+	<SimpleField name="aa" type="string"></SimpleField>
+	<SimpleField name="bb" type="string"></SimpleField>
+	<SimpleField name="cc" type="string"></SimpleField>
+	<SimpleField name="cartodb_id" type="int"></SimpleField>
+	<SimpleField name="created_at" type="string"></SimpleField>
+	<SimpleField name="updated_at" type="string"></SimpleField>
+</Schema>
+<Folder><name>file</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#file">
+		<SimpleData name="aa">1</SimpleData>
+		<SimpleData name="bb">2</SimpleData>
+		<SimpleData name="cc">3</SimpleData>
+		<SimpleData name="cartodb_id">1</SimpleData>
+		<SimpleData name="created_at">2015/02/26 19:46:51+00</SimpleData>
+		<SimpleData name="updated_at">2015/02/26 19:46:51+00</SimpleData>
+	</SchemaData></ExtendedData>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#file">
+		<SimpleData name="aa">4</SimpleData>
+		<SimpleData name="bb">5</SimpleData>
+		<SimpleData name="cc">6</SimpleData>
+		<SimpleData name="cartodb_id">2</SimpleData>
+		<SimpleData name="created_at">2015/02/26 19:46:51+00</SimpleData>
+		<SimpleData name="updated_at">2015/02/26 19:46:51+00</SimpleData>
+	</SchemaData></ExtendedData>
+  </Placemark>
+  <Placemark>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#file">
+		<SimpleData name="cartodb_id">3</SimpleData>
+		<SimpleData name="created_at">2015/02/27 16:57:30+00</SimpleData>
+		<SimpleData name="updated_at">2015/02/27 16:57:30+00</SimpleData>
+	</SchemaData></ExtendedData>
+      <MultiGeometry><Polygon><outerBoundaryIs><LinearRing><coordinates>-12.65625,49.610709938074223 -13.359375,33.724339661747599 10.546875,32.842673631954312 10.1953125,44.465151013519616 -12.65625,49.610709938074223</coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry>
+  </Placemark>
+</Folder>
+</Document></kml>

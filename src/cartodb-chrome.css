@@ -1,12 +1,20 @@
 .cartodb-import-button {
-  width: 36px;
-  height: 36px;
   position: absolute;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: 80% 80%;
   cursor: pointer;
   opacity: .6;
+}
+
+.table-import {
+  width: 36px;
+  height: 36px;
+}
+
+.link-import {
+  width: 20px;
+  height: 20px;
 }
 
 .cartodb-import-button {
