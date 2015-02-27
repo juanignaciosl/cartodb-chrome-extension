@@ -95,13 +95,17 @@ function importableLinks() {
 
 function filterLinksWithKnownExtensions(sourceLinks) {
   return sourceLinks.filter(function(link) {
-    var extension = extractExtension(link);
-    return SUPPORTED_EXTENSIONS.indexOf(extension) != -1;
+    return isLinkSupported(link.href);
   });
 }
 
-function extractExtension(url) {
-  var urlWithoutParameters = url.href.split('?')[0];
+function isLinkSupported(url) {
+  var extension = extractExtension(url);
+  return SUPPORTED_EXTENSIONS.indexOf(extension) != -1;
+}
+
+function extractExtension(urlHref) {
+  var urlWithoutParameters = urlHref.split('?')[0];
   var fragments = urlWithoutParameters.split('.');
   return fragments[fragments.length - 1].toLowerCase();
 }
@@ -308,11 +312,19 @@ document.addEventListener("mousedown", function(event){
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if(request == "getClickedEl" && clickedEl != null) {
-      var table = closestTable(clickedEl);
-      if(table == null) {
-        alert("Click on a table to import data into CartoDB");
+      if(clickedEl.tagName === 'A') {
+        if(isLinkSupported(clickedEl.href)) {
+          importLink(clickedEl);
+        } else {
+          alert("This file (" + clickedEl.href + ") is not suppported. Supported extensions: " + SUPPORTED_EXTENSIONS.join(', ') + ".");
+        }
       } else {
-        importTable(table);
+        var table = closestTable(clickedEl);
+        if(table != null) {
+          alert("Right click on a table or a link to import a dataset into CartoDB");
+        } else {
+          importTable(table);
+        }
       }
     }
 });
