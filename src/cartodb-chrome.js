@@ -101,7 +101,8 @@ function filterLinksWithKnownExtensions(sourceLinks) {
 }
 
 function extractExtension(url) {
-  var fragments = url.href.split('.');
+  var urlWithoutParameters = url.href.split('?')[0];
+  var fragments = urlWithoutParameters.split('.');
   return fragments[fragments.length - 1].toLowerCase();
 }
 
