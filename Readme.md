@@ -36,6 +36,12 @@ Click <a href="https://github.com/juanignaciosl/cartodb-chrome-extension/raw/mas
 
 Click the icon in order to set your user and apikey.
 
-You will see CartoDB icon on top of every table that we think you'd like to import to CartoDB. If there's a table without the icon you can right click on it.
+You will see CartoDB icon on top of every table that we think you'd like to import to CartoDB. If there's a table without the icon you can right click on it. Example: 
+<table>
+  <tr><th>Header A</th><th>Header B</th></tr>
+  <tr><th>Spain</th><td>2</td></tr>
+  <tr><th>USA</th><td>4</td></tr>
+  <tr><th>France</th><td>4</td></tr>
+</table>
 
 You'll also see the icon next to download links of supported extensions, like this <a href="https://raw.githubusercontent.com/juanignaciosl/cartodb-chrome-extension/master/test/file.csv">CSV</a>. Zip files doesn't display the icon, but if there's a zip with geometries (SHPs, other supported extensions, etc) you can import it by right clicking on it.
