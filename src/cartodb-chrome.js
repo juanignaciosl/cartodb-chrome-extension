@@ -5,7 +5,9 @@ var ICON_URL = chrome.extension.getURL("cartodb-stroke.png");
 var MIN_ROWS = 4
 var MIN_COLS = 2
 
-var SUPPORTED_EXTENSIONS = ['csv', 'geojson', 'kml', 'xls', 'xlsx', 'zip'];
+var DIRECT_IMPORT_EXTENSIONS = ['csv', 'geojson', 'kml', 'xls', 'xlsx' ];
+var ADDITIONAL_RIGHT_CLICK_EXTENSIONS = [ 'zip' ];
+var SUPPORTED_EXTENSIONS = DIRECT_IMPORT_EXTENSIONS.concat(ADDITIONAL_RIGHT_CLICK_EXTENSIONS);
 
 ////////////// Strings
 var BUTTON_TITLE = 'Click to import to CartoDB';
@@ -59,7 +61,7 @@ function filterSmallTables(tables) {
 
 ////////////// Display button methods at links
 function makeLinksImportables() {
-	var links = importableLinks();
+	var links = directImportableLinks();
   links.map(function(link) {
     addImportButton(link, linkImportButton(importLinkFromButton));
   });
@@ -87,21 +89,24 @@ function addImportButton(element, button) {
   style.opacity = null;
 }
 
-function importableLinks() {
+function directImportableLinks() {
   var links =  [].slice.call(document.getElementsByTagName('a'));
-  links = filterLinksWithKnownExtensions(links);
+  links = filterLinksWithDirectImportExtensions(links);
   return links;
 }
 
-function filterLinksWithKnownExtensions(sourceLinks) {
+function filterLinksWithDirectImportExtensions(sourceLinks) {
   return sourceLinks.filter(function(link) {
-    return isLinkSupported(link.href);
+    return isDirectImportLinkSupported(link.href);
   });
 }
 
+function isDirectImportLinkSupported(url) {
+  return DIRECT_IMPORT_EXTENSIONS.indexOf(extractExtension(url)) != -1;
+}
+
 function isLinkSupported(url) {
-  var extension = extractExtension(url);
-  return SUPPORTED_EXTENSIONS.indexOf(extension) != -1;
+  return SUPPORTED_EXTENSIONS.indexOf(extractExtension(url)) != -1;
 }
 
 function extractExtension(urlHref) {
