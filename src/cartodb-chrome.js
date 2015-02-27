@@ -12,8 +12,22 @@ var BUTTON_TITLE = 'Click to import to CartoDB';
 function makeTablesImportables() {
 	var tables = importableTables();
   tables.map(function(table) {
-    addImportButton(table, importTableFromButton);
+    addImportButton(table, tableImportButton(importTableFromButton));
   });
+}
+
+function importButton(onclickHandler) {
+  var button = document.createElement('div');
+  button.className = 'cartodb-import-button';
+  button.onclick = onclickHandler;
+  button.title = BUTTON_TITLE;
+  return button;
+}
+
+function tableImportButton(onclickHandler) {
+  var button = importButton(onclickHandler);
+  button.className += ' table-import';
+  return button;
 }
 
 function importTableFromButton(event) {
@@ -45,19 +59,21 @@ function filterSmallTables(tables) {
 function makeLinksImportables() {
 	var links = importableLinks();
   links.map(function(link) {
-    addImportButton(link, importLinkFromButton);
+    addImportButton(link, linkImportButton(importLinkFromButton));
   });
+}
+
+function linkImportButton(onclickHandler) {
+  var button = importButton(onclickHandler);
+  button.className += ' link-import';
+  return button;
 }
 
 function importLinkFromButton(event) {
   importLink(event.srcElement.nextSibling);
 }
 
-function addImportButton(element, onclickHandler) {
-  var button = document.createElement('div');
-  button.className = 'cartodb-import-button';
-  button.onclick = onclickHandler;
-  button.title = BUTTON_TITLE;
+function addImportButton(element, button) {
   var style = button.style;
   style.backgroundImage = "url('"+ICON_URL+"')";
   style.opacity = 0;
@@ -242,9 +258,14 @@ function sendCsvWithApikey(csv) {
   }, sendImportErrorHandler);
 }
 
+function extractNameFromUrl(url) {
+  var parts = url.split('/');
+  return parts[parts.length - 1];
+}
+
 function sendFileUrlWithApikey(url) {
   cartoDB.sendFileUrl(url, function(importResult) {
-    addImport(importResult, name, sendImportOkHandler);
+    addImport(importResult, extractNameFromUrl(url), sendImportOkHandler);
   }, sendImportErrorHandler);
 }
 
