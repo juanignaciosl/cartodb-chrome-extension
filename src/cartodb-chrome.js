@@ -325,7 +325,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         }
       } else {
         var table = closestTable(clickedEl);
-        if(table != null) {
+        if(table == null) {
           alert("Right click on a table or a link to import a dataset into CartoDB");
         } else {
           importTable(table);
