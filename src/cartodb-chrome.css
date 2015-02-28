@@ -13,6 +13,8 @@
 }
 
 .link-import {
+  display: inline-block;
+  position: inherit;
   width: 20px;
   height: 20px;
 }
