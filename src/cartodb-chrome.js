@@ -19,7 +19,7 @@ var cartoDB = new CartoDB(new CartoDBAPI(), new CartoDBLocalStorage());
 
 var ICON_URL = chrome.extension.getURL("cartodb-stroke.png");
 
-var MIN_ROWS = 6
+var MIN_ROWS = 4
 var MIN_COLS = 2
 
 var DIRECT_IMPORT_EXTENSIONS = ['csv', 'geojson', 'kml', 'xls', 'xlsx' ];
