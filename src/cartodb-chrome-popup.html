@@ -2,22 +2,24 @@
 <html>
   <head>
     <title>CartoDB Chrome Extension</title>
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700" rel=stylesheet type=text/css>
     <style>
       body {
-        width: 300px;
+        width: 250px;
         overflow-x: hidden;
         padding: 10px 30px;
         text-align: center;
-        font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+        color: #555555;
+        font-size: 18px;
+      }
+      body, input {
+        font-family: Lato,"Proxima Nova W01","Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-weight: 300;
       }
       button {
         padding: 10px 20px;
         display: block;
         margin: 10px auto 20px auto;
-      }
-      h1 {
-        font-family: "Proxima Nova Sb", "Helvetica Neue", "Helvetica", Arial, sans-serif;
-        color: #2483B4;
       }
       button {
         background-color: #2483B4;
@@ -26,6 +28,7 @@
       }
       #logo-image {
         width: 60px;
+        border-radius: 4px;
       }
       img {
         display: block;
@@ -35,6 +38,18 @@
         display: block;
         margin: 10px 0;
       }
+      a {
+        color: #3F9AE9;
+        text-decoration: none;
+      }
+      input {
+        width: 220px;
+        margin: 2px auto;
+        border: 1px solid #cccccc;
+        font-size: 14px;
+        padding: 8px;
+        text-align: center;
+      }
       .error {
         color: red;
         display: none;
@@ -42,7 +57,18 @@
       .error button {
         background-color: red;
       }
+
+      .instructions {
+        color: #cccccc;
+        font-size: 16px;
+      }
       
+      #save-button {
+        background: #8EB83F;
+        border-radius: 50px;
+        text-transform: uppercase;
+        margin-top: 25px;
+      }
       #imports {
         display: none;
       }
@@ -61,26 +87,23 @@
     <script src="cartodb-chrome.js"></script>
   </head>
   <body>
-    <h1>CartoDB</h1>
+    <img src="" id="logo-image" />
+    <p class="header">To get started insert your CartoDB credentials</p>
     <label>
-      Username
-      <input type="text" id="username" name="username" size="20" maxlength="40" />
+      <input type="text" id="username" name="username" placeholder="CartoDB username" size="20" maxlength="40" />
     </label>
     <label>
-      Api key
-      <input type="text" id="apikey" name="apikey" size="40" maxlength="40" />
+      <input type="text" id="apikey" name="apikey" placeholder="CartoDB API Key" size="40" maxlength="40" title="You can get your Api key at CartoDB. Click your username at the top right menu in the page and press 'Your Api keys' option."/>
     </label>
-    <button id="save-button">Save</button>
+    <button id="save-button">Save changes</button>
+
+    <div class="instructions">
+      Don't you have an account? <a href="http://www.cartodb.com/signup">Sign up</a>
+    </div>
 
     <div id="required-data-error" class="error">
       <p>You must set the username and api key. If you dismiss your credentials you won't be able to import tables.</p>
       <button id="dismiss-button">Dismiss credentials</button>
-    </div>
-
-    <div id="instructions">
-      <p>You can get your Api key at <a href="https://www.cartodb.com">CartoDB</a>. Click your username at the top right menu in the page and press "Your Api keys" option.</p>
-      <a href="http://www.cartodb.com"><img src="" id="menu-image"/></a>
-      <a href="http://www.cartodb.com"><img src="" id="logo-image"/></a>
     </div>
 
     <div id="imports">

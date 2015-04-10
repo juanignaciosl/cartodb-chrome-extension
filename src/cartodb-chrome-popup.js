@@ -5,10 +5,10 @@ var TABLE_LINK = 'view';
 document.addEventListener(
     'DOMContentLoaded', 
     function () {
+      document.getElementById('username').focus();
       document.getElementById("save-button").addEventListener('click', saveClicked);
       document.getElementById("dismiss-button").addEventListener('click', dismissedClicked);
-      document.getElementById('menu-image').src = chrome.extension.getURL("menu.png");
-      document.getElementById('logo-image').src = chrome.extension.getURL("cartodb.png");
+      document.getElementById('logo-image').src = chrome.extension.getURL("avatar_200x200.png");
 
       loadInitialData();
     });

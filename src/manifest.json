@@ -2,15 +2,15 @@
   "manifest_version": 2,
   "name": "CartoDB",
   "description": "One-click map creation from any table!",
-  "version": "0.5.1",
+  "version": "0.6",
   "browser_action": {
-    "default_icon": "cartodb.png",
+    "default_icon": "avatar_128x128.png",
     "default_popup": "cartodb-chrome-popup.html"
   },
   "icons": {
-    "16": "cartodb.png",
-    "48": "cartodb.png",
-    "128": "cartodb.png"
+    "16": "avatar_16x16.png",
+    "48": "avatar_48x48.png",
+    "128": "avatar_128x128.png"
   },
   "permissions": [
     "https://www.cartodb.com/",
@@ -28,7 +28,7 @@
   {
     "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
     "css": ["cartodb-chrome.css"],
-    "js": [ "cartodb.js", "helpers.js", "cartodb-chrome.js", "sprintf.min.js" ],
+    "js": [ "helpers.js", "cartodb.js", "cartodb-chrome.js", "sprintf.min.js" ],
     "all_frames": true
   } ],
   "web_accessible_resources": [
