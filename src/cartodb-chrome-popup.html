@@ -20,8 +20,6 @@
         padding: 10px 20px;
         display: block;
         margin: 10px auto 20px auto;
-      }
-      button {
         background-color: #2483B4;
         border: none;
         color: white;
@@ -29,6 +27,13 @@
       #logo-image {
         width: 60px;
         border-radius: 4px;
+      }
+      #profile-image {
+        width: 50px;
+        border-radius: 4px;
+      }
+      h1, h2, h3 {
+        margin: 0;
       }
       img {
         display: block;
@@ -38,10 +43,6 @@
         display: block;
         margin: 10px 0;
       }
-      a {
-        color: #3F9AE9;
-        text-decoration: none;
-      }
       input {
         width: 220px;
         margin: 2px auto;
@@ -49,6 +50,26 @@
         font-size: 14px;
         padding: 8px;
         text-align: center;
+      }
+      a, #dismiss-button {
+        color: #3F9AE9;
+        text-decoration: none;
+      }
+      #dismiss-button {
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        display: inline;
+      }
+      #logged-in, #not-logged-in {
+        display: none;
+      }
+      body.logged-in #logged-in {
+        display: block;
+      }
+      body.not-logged-in #not-logged-in {
+        display: block;
       }
       .error {
         color: red;
@@ -62,23 +83,49 @@
         color: #cccccc;
         font-size: 16px;
       }
+
+      .profile {
+        width: 100%;
+        text-align: left;
+        margin-button: 10px;
+      }
+
+      .profile div, .profile button {
+        font-size: 16px;
+      }
+
+      .profile img {
+        float: left;
+        margin-right: 10px;
+      }
       
       #save-button {
-        background: #8EB83F;
         border-radius: 50px;
         text-transform: uppercase;
+        background: #8EB83F;
         margin-top: 25px;
       }
       #imports {
         display: none;
+        text-align: left;
       }
 
       #imports #tableImportList {
         list-style-type: none;
       }
       
+      #imports ul {
+        padding: 0;
+        font-size: 14px;
+      }
+
       #imports #tableImportList li {
         text-align: left;
+      }
+
+      .state {
+        display: inline-block;
+        margin-left: 4px;
       }
     </style>
 
@@ -87,31 +134,38 @@
     <script src="cartodb-chrome.js"></script>
   </head>
   <body>
-    <img src="" id="logo-image" />
-    <p class="header">To get started insert your CartoDB credentials</p>
-    <label>
-      <input type="text" id="username" name="username" placeholder="CartoDB username" size="20" maxlength="40" />
-    </label>
-    <label>
-      <input type="text" id="apikey" name="apikey" placeholder="CartoDB API Key" size="40" maxlength="40" title="You can get your Api key at CartoDB. Click your username at the top right menu in the page and press 'Your Api keys' option."/>
-    </label>
-    <button id="save-button">Save changes</button>
 
-    <div class="instructions">
-      Don't you have an account? <a href="http://www.cartodb.com/signup">Sign up</a>
+    <div id="not-logged-in">
+      <img src="" id="logo-image" />
+      <p class="header">To get started insert your CartoDB credentials</p>
+      <label>
+        <input type="text" id="username" name="username" placeholder="CartoDB username" size="20" maxlength="40" />
+      </label>
+      <label>
+        <input type="text" id="apikey" name="apikey" placeholder="CartoDB API Key" size="40" maxlength="40" title="You can get your Api key at CartoDB. Click your username at the top right menu in the page and press 'Your Api keys' option."/>
+      </label>
+      <button id="save-button">Save changes</button>
+
+      <div class="instructions" id="signup-instructions">
+        Don't you have an account? <a href="http://www.cartodb.com/signup">Sign up</a>
+      </div>
+
+      <div id="required-data-error" class="error">
+      </div>
     </div>
 
-    <div id="required-data-error" class="error">
-      <p>You must set the username and api key. If you dismiss your credentials you won't be able to import tables.</p>
-      <button id="dismiss-button">Dismiss credentials</button>
-    </div>
-
-    <div id="imports">
-      <h2>Last browser imports</h2>
-      <ul id="tableImportList">
-      </ul>
+    <div id="logged-in">
+      <div id="imports">
+        <h3>Last imports</h3>
+        <ul id="tableImportList">
+        </ul>
+        <div class="profile">
+          <img src="" id="profile-image" />
+          <div>Logged in as <span id="logged-in-username"></span></div>
+          <div><button id="dismiss-button">Disconnect</button></div>
+        </div>
+      </div>
     </div>
 
   </body>
 </html>
-

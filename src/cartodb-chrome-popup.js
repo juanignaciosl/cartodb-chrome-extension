@@ -9,6 +9,7 @@ document.addEventListener(
       document.getElementById("save-button").addEventListener('click', saveClicked);
       document.getElementById("dismiss-button").addEventListener('click', dismissedClicked);
       document.getElementById('logo-image').src = chrome.extension.getURL("avatar_200x200.png");
+      document.getElementById('profile-image').src = chrome.extension.getURL("avatar_100x100.png");
 
       loadInitialData();
     });
@@ -21,14 +22,14 @@ window.addEventListener('click',function(e){
 
 function loadInitialData() {
   cartoDB.credentials(function(apikey, username) {
-    toggleInstructions(false);
     loadApikeyAndUsername(apikey, username);
     cartoDB.imports(function(imports) {
       loadImports(imports);
+      toggleLoggedIn(true);
     });
   }, function() {
     loadApikeyAndUsername('', '');
-    toggleInstructions(true);
+    toggleLoggedIn(false);
   });
 }
 
@@ -50,7 +51,7 @@ function saveClicked() {
   } else {
     error.style.display = 'block';
   }
-  toggleInstructions(hasCredentials);
+  toggleLoggedIn(hasCredentials);
 }
 
 function save(apikey, username, callback) {
@@ -64,9 +65,11 @@ function dismissedClicked() {
 function loadApikeyAndUsername(apikeyValue, usernameValue) {
   var apikey = document.getElementById('apikey');
   var username = document.getElementById('username');
+  var logged_in_username = document.getElementById('logged-in-username');
 
   apikey.value = apikeyValue || '';
   username.value = usernameValue || '';
+  logged_in_username.innerText = usernameValue || '';
 }
 
 function loadImports(imports) {
@@ -82,8 +85,9 @@ function loadImports(imports) {
   for(var i in imports) {
     var tableImport = imports[i];
     var stateId = 'state-' + tableImport.item_queue_id;
-    importList.appendChild(createElement('li', tableImport.filename + '. <a class="state" id="' + stateId + '"></a>'));
-    loadState(tableImport, document.getElementById(stateId));
+    var li = createElement('li', tableImport.filename);
+    importList.appendChild(li);
+    loadState(tableImport, li);
   }
 
   if(imports.length === 0) {
@@ -93,7 +97,10 @@ function loadImports(imports) {
   document.getElementById('imports').style.display = 'block';
 }
 
-function loadState(tableImport, stateLink) {
+function loadState(tableImport, importElement) {
+  var stateLink = createElement('span');
+  stateLink.className = 'state';
+  importElement.appendChild(stateLink);
   stateLink.innerText = 'Loading...';
 
   cartoDB.tableImportResult(tableImport, function(tableImportResult) {
@@ -102,8 +109,12 @@ function loadState(tableImport, stateLink) {
 
       if(tableImportResult.state === 'complete') {
         cartoDB.tableURL(tableImportResult, function(url) {
+          importElement.removeChild(stateLink);
+          stateLink = createElement('a');
+          stateLink.className = 'state';
           stateLink.innerText = TABLE_LINK;
           stateLink.href = url;
+          importElement.appendChild(stateLink);
         });
       }
     }
@@ -116,10 +127,7 @@ function createElement(tagName, html) {
   return li;
 }
 
-function toggleInstructions(show) {
-  if(show) {
-    document.getElementById('instructions').style.display = 'block';
-  } else {
-    document.getElementById('instructions').style.display = 'none';
-  }
+function toggleLoggedIn(isLoggedIn) {
+  var body = document.getElementsByTagName('body')[0];
+  body.className = isLoggedIn ? 'logged-in' : 'not-logged-in';
 }

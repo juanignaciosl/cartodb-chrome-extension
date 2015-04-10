@@ -21,7 +21,7 @@ function CartoDBAPI() {
   }
 
   this.sendImportURL = function(apikey, username) {
-    return importURLRoot(username) + '?api_key=' + apikey + '&content_guessing=true'; 
+    return importURLRoot(username) + '?api_key=' + apikey + '&content_guessing=true&create_vis=true'; 
   }
 
   this.sendCsvURL = function(apikey, username, name) {
@@ -29,7 +29,7 @@ function CartoDBAPI() {
   }
 
   this.tableURL = function(username, tableImportResult) {
-    return urlRoot(username) + '/tables/' + tableImportResult.table_name;
+    return urlRoot(username) + '/viz/' + tableImportResult.visualization_id + '/public_map';
   }
 }
 
@@ -75,7 +75,6 @@ CartoDBAPI.prototype.loadTableImportResult = function(apikey, username, tableImp
       }
     }
   };
-  console.log('Requesting import result');
   xhr.send();
 }
 
