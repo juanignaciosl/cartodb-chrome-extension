@@ -109,14 +109,14 @@ function loadState(tableImport, importElement) {
 
       if(tableImportResult.state === 'complete') {
         cartoDB.tableURL(tableImportResult, function(url) {
+          console.log(url);
           stateLink.innerText = 'Done!'
-          // TODO: commented out until we can provide a valid link
-          //importElement.removeChild(stateLink);
-          //stateLink = createElement('a');
-          //stateLink.className = 'state';
-          //stateLink.innerText = TABLE_LINK;
-          //stateLink.href = url;
-          //importElement.appendChild(stateLink);
+          importElement.removeChild(stateLink);
+          stateLink = createElement('a');
+          stateLink.className = 'state';
+          stateLink.innerText = TABLE_LINK;
+          stateLink.href = url;
+          importElement.appendChild(stateLink);
         });
       }
     }

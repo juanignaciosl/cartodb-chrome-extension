@@ -29,7 +29,7 @@ function CartoDBAPI() {
   }
 
   this.tableURL = function(username, tableImportResult) {
-    return urlRoot(username) + '/viz/' + tableImportResult.visualization_id + '/public_map';
+    return urlRoot(username) + '/viz/' + tableImportResult.visualization_id + '/map';
   }
 }
 
