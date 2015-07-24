@@ -39,7 +39,7 @@ Click <a href="https://github.com/juanignaciosl/cartodb-chrome-extension/raw/mas
 Click the icon in order to set your user and apikey.
 
 You will see CartoDB icon on top of every table that we think you'd like to import to CartoDB. If there's a table without the icon you can right click on it. Example: 
-<table>
+<table id="sample_table">
   <tr><th>Header A</th><th>Header B</th></tr>
   <tr><th>Spain</th><td>2</td></tr>
   <tr><th>USA</th><td>4</td></tr>
